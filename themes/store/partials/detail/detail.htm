@@ -60,11 +60,11 @@
     <div class="swiper-container gallery-top">
         <div class="swiper-wrapper">
             <div class="swiper-slide">
-                <img src="{{ product.image.path }}" alt="{{ product.name }}">
+                <img src=" {% if product.image.path %}{{ product.image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %} " alt="{{ product.name }}">
             </div>
             {% for image in product.images %}
             <div class="swiper-slide">
-                <img src="{{ image.path }}" alt="{{ product.name }}">
+                <img src=" {% if image.path %}{{ image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %} " alt="{{ product.name }}">
             </div>
             {% endfor %}
         </div>
@@ -76,11 +76,11 @@
     <div class="swiper-container gallery-thumbs">
         <div class="swiper-wrapper">
             <div class="swiper-slide">
-                <img src="{{ product.image.path }}" alt="{{ product.name }}">
+                <img src=" {% if product.image.path %}{{ product.image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %} " alt="{{ product.name }}">
             </div>
             {% for image in product.images %}
             <div class="swiper-slide">
-                <img src="{{ image.path }}" alt="{{ product.name }}">
+                <img src=" {% if image.path %}{{ image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %} " alt="{{ product.name }}">
             </div>
             {% endfor %}
         </div>
@@ -111,6 +111,7 @@
                     {% endif %}
                 {% endif %}
             </div>
+            <div class="featured-tag-detail">التوصيل خلال {{ product.delivery_time }}</div>
             
             <div class="product-description-modern">
                 <p>{{ product.short_description }}</p>

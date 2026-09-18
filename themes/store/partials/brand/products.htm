@@ -91,7 +91,7 @@
                     {% if product.HasPromotions == true  %}
                     <div class="badge-sale">{{ product.promotionsActive.discount_value }} %</div>
                     {% endif %}
-                    
+                    <div class="featured-tag">التوصيل خلال {{ product.delivery_time }}</div>
                     <div class="star-rating">
                         <i class="fas fa-star"></i> {{ product.averageRating | default(0) }}
                     </div>

@@ -143,7 +143,7 @@
                         {{ product.promotionsActive.discount_value }}% OFF
                     </div>
                 {% endif %}
-                
+                <div class="featured-tag">التوصيل خلال {{ product.delivery_time }}</div>
                 <div class="mshop-rating">
                     <i class="fas fa-star"></i> {{ product.averageRating | default(0) }}
                 </div>

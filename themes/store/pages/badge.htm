@@ -53,6 +53,6 @@ function onStart()
    {% partial 'navbar' home=false  shop=true contact=false %}
 
 
-   {% if Store.onGetProductsWhereBadge is not empty %} {% partial 'category/products' relateds=Store.onGetRelatedBadge title_product='منتجات مميزة' name_component=Store.onGetProductsWhereBadge %} {% endif %}
+   {% if Store.onGetProductsWhereBadge is not empty %} {% partial 'badge/products' relateds=Store.onGetRelatedBadge title_product='منتجات مميزة' name_component=Store.onGetProductsWhereBadge %} {% endif %}
 
 {% partial 'check_phone_number' %}

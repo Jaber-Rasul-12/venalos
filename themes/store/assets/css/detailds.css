@@ -660,6 +660,16 @@
     outline: none;
     border-color: #D4AF7F;
 }
+.featured-tag-detail {
+    display: inline-block;
+    background: #D4AF7F;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 60px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
 
 .submit-review-btn {
     width: 100%;
