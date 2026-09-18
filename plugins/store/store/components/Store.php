@@ -7,6 +7,7 @@ use Store\Store\Models\EmailSubscribe;
 use Store\Store\Models\Product;
 use Store\Store\Models\ReturnPolicy;
 use Flash;
+use Store\Store\Models\Badge;
 use Store\Store\Models\Brand;
 use Store\Store\Models\Color;
 use Store\Store\Models\Comment;
@@ -159,6 +160,31 @@ class Store extends ComponentBase
             return null;
         }
 
+                public function onGetProductsWhereBadge()
+        {
+            $slug = $this->param('slug');
+            $page = post('page', 1);
+            $perPage = 12; 
+            
+            if (isset($slug) && !empty($slug)) {
+                $badge_id = Badge::where('slug', $slug)->first()->id;
+                
+                $products = Product::with('prices')->whereHas('badges', function($query) use ($badge_id) {
+                        $query->where('badge_id', $badge_id);
+                    })->where('status', '=', true)->orderBy('id' , 'desc')
+                    ->paginate($perPage, $page);
+                if($page == 1 ){
+                    return $products;
+                }else{
+                    return [
+                        '#pagindation' => $this->renderPartial('@pagindation.htm', ['GetAllProducts' => $products , 'pageNumber' => $page + 1 , 'nameAlgorithm' => __FUNCTION__]),
+                        '@#products-list_container' => $this->renderPartial('@products_lists_container.htm', ['GetAllProducts' => $products , 'isAuth' => Auth::check() ? true : false])];
+                }        
+            }
+            
+            return null;
+        }
+
 
     public function onGetProductsWhereSubCategory()
 {
@@ -204,6 +230,25 @@ class Store extends ComponentBase
         }
     
         return $category->related_categories()->withCount('products')->where('status', true)->get();
+    }
+
+        public function onGetRelatedBadge()
+    {
+        $slug = $this->param('slug');
+    
+        if (!$slug) {
+            return null;
+        }
+    
+        $badge = Badge::where('slug', $slug)
+            ->where('status', true)
+            ->first();
+    
+        if (!$badge) {
+            return null;
+        }
+    
+        return $badge->related_badges()->withCount('products')->where('status', true)->get();
     }
 
 
@@ -396,6 +441,11 @@ class Store extends ComponentBase
     public function onGetAllColors()
     {
         return Color::get();
+    }   
+
+        public function onGetAllBadges()
+    {
+        return Badge::get();
     }   
 
     public function onGetAllSizes()

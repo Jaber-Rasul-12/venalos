@@ -26,7 +26,7 @@
                 <div class="suggestions-card" onclick="location.href='/detail/{{ related.slug }}'">
                     <div class="suggestions-image-wrapper">
                         <div class="suggestions-image">
-                            <img src="{% if related.image.path %}{{ related.image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %}" 
+                            <img src=" {% if related.image.path %}{{ related.image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %}" 
                                  alt="{{ related.name }}"
                                  loading="lazy">
                             <div class="image-overlay">

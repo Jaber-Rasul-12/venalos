@@ -1,0 +1,58 @@
+title = "المميزات"
+url = "/badges/:slug"
+layout = "default"
+slug = "{{ :slug }}"
+[localePicker]
+[Store]
+[session]
+[Cart]
+[sociallogin]
+[PhoneNumberPopup]
+== 
+
+<?php
+function onStart()
+{
+    $slug = $this->param('slug');
+    $badge = \Store\Store\Models\Badge::where('slug', $slug)->first();
+
+    $badgeName = $badge->name;
+    
+    $this['meta_description'] = 'اكتشفي أحدث منتجات ' . $badgeName . ' في متجر فيكسو ✨ تشكيلة واسعة من المنتجات النسائية الفاخرة. تسوقي بأمان وتوصيل سريع لجميع أنحاء سوريا.';
+    $this['meta_keywords'] = $badgeName . ', ' . $badgeName . ' فيكسو, منتجات ' . $badgeName . ', تسوق ' . $badgeName . ' أونلاين, متجر نسائي سوريا';
+    $this['og_title'] = 'فيكسو | ' . $badgeName . ' - أحدث التشكيلات';
+    $this['og_description'] = 'تسوقي أحدث منتجات ' . $badgeName . ' من فيكسو. جودة عالية وأسعار مميزة مع توصيل سريع لجميع أنحاء سوريا.';
+    $this['og_url'] = 'badges/' . $slug;
+    $this['twitter_title'] = 'فيكسو - ' . $badgeName . ' | تسوقي بأسلوبك';
+    $this['twitter_description'] = 'تشكيلة مميزة من ' . $badgeName . ' في متجر فيكسو. منتجات أصلية بأسعار تنافسية وتوصيل سريع.';
+}
+?>
+
+==
+
+{% put head %}
+{% partial 'meta/meta'  
+    seodescription=meta_description
+    seokeywords=meta_keywords
+    seorobots='index, follow'
+    fslintitle=og_title
+    fslindescription=og_description
+    fslinimage='assets/img/file.jpeg'
+    fslinurl=og_url
+    fslintype='website'
+    twicard='summary_large_image'
+    twititle=twitter_title
+    twidescription=twitter_description
+    twiimage='assets/img/file.jpeg'
+%}
+{% endput %}
+
+{% partial 'site/bottom_nav' %}
+   {% partial 'home/topbar' %}
+
+   {% partial 'navbar' home=false  shop=true contact=false %}
+
+
+   {% if Store.onGetProductsWhereBadge is not empty %} {% partial 'category/products' relateds=Store.onGetRelatedBadge title_product='منتجات مميزة' name_component=Store.onGetProductsWhereBadge %} {% endif %}
+
+{% partial 'check_phone_number' %}

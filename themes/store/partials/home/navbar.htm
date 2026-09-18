@@ -45,42 +45,13 @@
 
 
 <div class="shein-actions-bar">
-    <a href="/promotions" class="shein-action-item">
-        <i class="fas fa-tags"></i> {{ 'تخفيضات' |_ }}
+  {% for badge in Store.onGetAllBadges %}
+  
+    <a href="/badges/{{ badge.slug }}" class="shein-action-item">
+        <i class="{{ badge.icon }}"></i> {{ badge.name }}
     </a>
-    <a href="/promotions" class="shein-action-item">
-        <i class="fas fa-gem"></i> {{ 'جديد' |_ }}
-    </a>
-    <a href="/promotions" class="shein-action-item">
-        <i class="fas fa-star"></i> {{ 'الأكثر مبيعاً' |_ }}
-    </a>
-    <a href="/promotions" class="shein-action-item">
-        <i class="fas fa-fire"></i> {{ 'عروض حصرية' |_ }}
-    </a>
-    <a href="/promotions" class="shein-action-item">
-        <i class="fas fa-chart-line"></i> {{ 'الأعلى تقييماً' |_ }}
-    </a>
-    <a href="/promotions" class="shein-action-item">
-        <i class="fas fa-clock"></i> {{ 'وصل حديثاً' |_ }}
-    </a>
-    <a href="/promotions" class="shein-action-item">
-        <i class="fas fa-percent"></i> {{ 'خصم 50%' |_ }}
-    </a>
-    <a href="/promotions" class="shein-action-item">
-        <i class="fas fa-gift"></i> {{ 'هدايا مجانية' |_ }}
-    </a>
-    <a href="/promotions" class="shein-action-item">
-        <i class="fas fa-truck"></i> {{ 'توصيل سريع' |_ }}
-    </a>
-    <a href="/promotions" class="shein-action-item">
-        <i class="fas fa-shield-alt"></i> {{ 'ضمان الجودة' |_ }}
-    </a>
-    <a href="/promotions" class="shein-action-item">
-        <i class="fas fa-hand-holding-usd"></i> {{ 'أفضل سعر' |_ }}
-    </a>
-    <a href="/promotions" class="shein-action-item">
-        <i class="fas fa-users"></i> {{ 'الأكثر مشاهدة' |_ }}
-    </a>
+    {% endfor %}
+
 </div>
 
 
@@ -131,7 +102,7 @@
         <div class="brands-grid">
            {% for brand in Store.getTopBrands %}
             <a href="/brand/{{ brand.slug }}" class="brand-card">
-                <img src="{% if brand.image.path %}{{ brand.image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %}" alt="{{ brand.name }}">
+                <img src=" {% if brand.image.path %}{{ brand.image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %}" alt="{{ brand.name }}">
                 <h4>{{ brand.name }}</h4>
             </a>
             {% endfor %}
