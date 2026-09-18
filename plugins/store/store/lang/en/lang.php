@@ -173,6 +173,7 @@ return [
             'related_products' => 'Related products',
             'backend_user' => 'Backend user',
             'brand' => 'Brand',
+            'delivery_time' => 'Delivery time',
             'merchant' => 'Merchant',
             'name' => 'Name',
             'short_name' => 'Short name',

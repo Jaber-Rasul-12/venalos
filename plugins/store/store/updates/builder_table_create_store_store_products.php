@@ -16,6 +16,7 @@ class BuilderTableCreateStoreStoreProducts extends Migration
             $table->string('slug');
             $table->unsignedInteger('backend_user_id');
             $table->unsignedInteger('merchant_id');
+            $table->string('delivery_time')->nullable();
 
             $table->unsignedInteger('brand_id');
             $table->string('short_description');

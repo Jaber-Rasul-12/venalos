@@ -18,6 +18,7 @@ fields:
         type: relation
         select: full_name
         placeholder: 'store.store::lang.plugin.select'
+
 tabs:
     icons:
         'store.store::lang.plugin.general': 'icon-address-book'
@@ -27,6 +28,7 @@ tabs:
         'store.store::lang.plugin.status': 'icon-toggle-on'
         'store.store::lang.plugin.prices': 'icon-money'
         'store.store::lang.plugin.categories': 'icon-folder-open'
+        'store.store::lang.plugin.badges': 'icon-certificate'
         'store.store::lang.plugin.taxes_products': 'icon-percent'
         'store.store::lang.plugin.return_policies': 'icon-refresh'
         'store.store::lang.plugin.promotions': 'icon-percent'
@@ -40,6 +42,11 @@ tabs:
 
     fields:
         # General Tab
+        delivery_time:
+            label: 'store.store::lang.model.product.delivery_time'
+            type: text
+            span: auto
+            tab: 'store.store::lang.plugin.general'
         brand:
             label: 'store.store::lang.model.product.brand'
             span: auto
@@ -126,6 +133,13 @@ tabs:
             type: relationmanager
             context: ['update', 'preview']
             tab: 'store.store::lang.plugin.categories'
+        # badges Tab    
+
+        badges:
+            label: store.store::lang.plugin.badges
+            type: relationmanager
+            context: ['update', 'preview']
+            tab: 'store.store::lang.plugin.badges'
         # taxes_products Tab    
         taxes_products:
             label: store.store::lang.model.product.taxes_products

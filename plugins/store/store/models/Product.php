@@ -38,7 +38,7 @@ class Product extends Model
         'slug' => 'required|string|unique:store_store_products,slug',
         'backend_user_id' => 'required|exists:backend_users,id',
         'merchant_id' => 'required|exists:store_store_merchants,id',
-
+        'delivery_time' => 'required|string',
         'brand_id' => 'required|exists:store_store_brands,id',
         'short_description' => 'required|string|max:500',
         'long_description' => 'required|string',

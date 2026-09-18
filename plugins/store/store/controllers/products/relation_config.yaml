@@ -114,6 +114,28 @@ return_policies:
     recordsPerPage: 15
     showSearch: true
     noRecordsMessage: 'لا توجد سياسات استرجاع مطابقة لمعايير البحث'
+badges:
+    label: 'الشارات'
+    view:
+        list: $/store/store/models/badge/columns.yaml
+        toolbarButtons: add|remove|create|delete
+    manage:
+        form: $/store/store/models/badge/fields.yaml
+        recordsPerPage: 10
+        showSearch: true
+        search:
+            prompt: 'بحث في الشارات'
+            mode: contains
+            onEnter: false
+        showSorting: true
+        defaultSort:
+            column: created_at
+            direction: desc
+        showSetup: true
+    recordsPerPage: 15
+    showSearch: true
+    noRecordsMessage: 'لا توجد شارات مطابقة لمعايير البحث'
+
 
 
 

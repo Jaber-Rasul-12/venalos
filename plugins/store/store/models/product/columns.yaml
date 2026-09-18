@@ -12,6 +12,9 @@ columns:
         label: 'store.store::lang.model.product.name'
         type: text
         searchable: true
+    delivery_time:
+        label: 'store.store::lang.model.product.delivery_time'
+        type: text
     short_name:
         label: 'store.store::lang.model.product.short_name'
         type: text
