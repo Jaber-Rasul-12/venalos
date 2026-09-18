@@ -65,6 +65,9 @@ permissions:
     teams:
         tab: 'store.store::lang.plugin.setting_store'
         label: 'store.store::lang.plugin.teams'
+    badges:
+        tab: 'store.store::lang.plugin.badges'
+        label: 'store.store::lang.plugin.badges'
 navigation:
     setting_store:
         label: 'store.store::lang.plugin.setting store'
@@ -121,6 +124,12 @@ navigation:
                 icon: icon-expand
                 permissions:
                     - sizes
+            badge:
+                label: 'store.store::lang.plugin.badges'
+                url: store/store/badges
+                icon: icon-certificate
+                permissions:
+                    - badges
             emailsubscribes:
                 label: 'store.store::lang.plugin.emailsubscribes'
                 url: store/store/emailsubscribes

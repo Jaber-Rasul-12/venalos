@@ -1,0 +1,20 @@
+fields:
+    name:
+        label: 'store.store::lang.model.badge.name'
+        span: auto
+        type: text
+    status:
+        label: 'store.store::lang.model.badge.status'
+        span: auto
+        type: switch
+    icon:
+        label: 'store.store::lang.model.badge.icon'
+        type: 'iconpicker'
+        default: 'far icon-address-book'
+        libraries: ~/modules/backend/formwidgets/iconpicker/meta/libraries.yaml
+    related_badges:
+        label: 'store.store::lang.model.badge.related_badges'
+        span: full
+        type: relation
+        nameFrom: name
+        context: 'update'

@@ -48,6 +48,7 @@ return [
         'teams' => 'Teams',
         'create_and_new' => 'Create and New',
         'subcategories' => 'Sub Categories',
+        'badges' => 'Badges',
     ],
     'model' => [
         'category' => [
@@ -303,11 +304,21 @@ return [
             'wh_number' => 'Wh number',
             'job' => 'Job',
             'type' => 'Type',
-            'basics'=>'Basics',
-            'agent'=>'Agent',
-            'address'=>'Address',
+            'basics' => 'Basics',
+            'agent' => 'Agent',
+            'address' => 'Address',
             'created_at' => 'Created at',
             'updated_at' => 'Updated at',
+        ],
+        'badge' => [
+            'id' => 'Id',
+            'name' => 'Name',
+            'icon' => 'Icon',
+            'slug' => 'Slug',
+            'related_badges' => 'Related badges',
+            'created_at' => 'Created at',
+            'updated_at' => 'Updated at',
+            'status' => 'Status',
         ],
     ],
     'controller' => [
@@ -367,6 +378,9 @@ return [
         ],
         'teams' => [
             'teams' => 'Teams',
+        ],
+        'badges' => [
+            'badges' => 'Badges',
         ],
     ],
 ];

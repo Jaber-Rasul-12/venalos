@@ -1,0 +1,22 @@
+columns:
+    id:
+        label: 'store.store::lang.model.badge.id'
+        type: number
+    name:
+        label: 'store.store::lang.model.badge.name'
+        type: text
+        searchable: true
+    status:
+        label: 'store.store::lang.model.badge.status'
+        type: store-list-switch  
+        icon: true
+        font-size: 20 
+    slug:
+        label: 'store.store::lang.model.badge.slug'
+        type: text
+    created_at:
+        label: 'store.store::lang.model.badge.created_at'
+        type: datetime
+    updated_at:
+        label: 'store.store::lang.model.badge.updated_at'
+        type: datetime

@@ -64,6 +64,7 @@ class Product extends Model
     public $belongsToMany = [
         'taxes_products' => ['Store\Store\Models\ProductTaxe', 'table' => 'store_store_product_taxes_products'],
         'return_policies' => ['Store\Store\Models\ReturnPolicy', 'table' => 'store_store_products_return_policies'],
+        'badges' => ['Store\Store\Models\Badge', 'table' => 'store_store_badges_products'],
         'colors' => ['Store\Store\Models\Color', 'table' => 'store_store_products_colors'],
         'sizes' => ['Store\Store\Models\Size', 'table' => 'store_store_products_sizes'],
         'related_products' => [

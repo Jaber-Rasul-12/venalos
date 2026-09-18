@@ -1,0 +1,10 @@
+name: 'store.store::lang.controller.badges.badges'
+form: $/store/store/models/badge/fields.yaml
+modelClass: Store\Store\Models\Badge
+defaultRedirect: store/store/badges
+create:
+    redirect: 'store/store/badges/update/:id'
+    redirectClose: store/store/badges
+update:
+    redirect: store/store/badges
+    redirectClose: store/store/badges

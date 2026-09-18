@@ -87,3 +87,12 @@
 1.0.31:
     - 'Created table store_store_teams'
     - builder_table_create_store_store_teams.php
+1.0.32:
+    - 'Created table store_store_badges'
+    - builder_table_create_store_store_badges.php
+1.0.33:
+    - 'Created table store_store_badges_products'
+    - builder_table_create_store_store_badges_products.php
+1.0.34:
+    - 'Created table store_store_badges_related'
+    - builder_table_create_store_store_badges_related.php
