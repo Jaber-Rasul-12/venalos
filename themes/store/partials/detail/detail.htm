@@ -1,0 +1,353 @@
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<div class="modern-product-detail">
+    
+{% if relateds is not empty %}
+<div class="suggestions-wrapper">
+    <div class="suggestions-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="fw-bold pt-2">
+                    <i class="bi bi-star-fill text-warning me-2"></i>
+                    {{ 'منتجات قد تعجبك' |_ }}
+                </h5>
+               
+            </div>
+           
+        </div>
+    </div>
+    
+    <div class="suggestions-scroll-container">
+        <div class="suggestions-suggestions">
+            {% for related in relateds %}
+                <div class="suggestions-card" onclick="location.href='/detail/{{ related.slug }}'">
+                    <div class="suggestions-image-wrapper">
+                        <div class="suggestions-image">
+                            <img src="{% if related.image.path %}{{ related.image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %}" 
+                                 alt="{{ related.name }}"
+                                 loading="lazy">
+                            <div class="image-overlay">
+                                <i class="bi bi-box-arrow-up-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="suggestions-info">
+                        <h6 class="related-name">{{ related.name }}</h6>
+                        <small class="product-count text-muted">
+                            {% if related.products_count %}
+                                {{ related.products_count }} {{ 'منتج' |_ }}
+                            {% else %}
+                                {{ 'متوفر الآن' |_ }}
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+    <div class="product-main-modern">
+        {% set product = Store.onGetProductWithSlug %}
+        
+<!-- استبدل معرض الصور بهذا -->
+<div class="product-gallery-section" style="margin-bottom: 20px;">
+    <!-- السلايدر الرئيسي -->
+    <div class="swiper-container gallery-top">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide">
+                <img src="{{ product.image.path }}" alt="{{ product.name }}">
+            </div>
+            {% for image in product.images %}
+            <div class="swiper-slide">
+                <img src="{{ image.path }}" alt="{{ product.name }}">
+            </div>
+            {% endfor %}
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+
+    <!-- السلايدر المصغر -->
+    <div class="swiper-container gallery-thumbs">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide">
+                <img src="{{ product.image.path }}" alt="{{ product.name }}">
+            </div>
+            {% for image in product.images %}
+            <div class="swiper-slide">
+                <img src="{{ image.path }}" alt="{{ product.name }}">
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+        
+        <div class="product-info-modern">
+            <h1 class="product-title-modern">{{ product.name }}</h1>
+            
+            <div class="product-price-modern">
+                {% set activePrice = null %}
+                {% set previousPrice = null %}
+                
+                {% for price in product.prices %}
+                    {% if price.status == true %}
+                        {% set activePrice = price %}
+                        {% if loop.index0 > 0 %}
+                            {% set previousPrice = product.prices[loop.index0 - 1] %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                
+                {% if activePrice %}
+                    <div class="price-current">{{ activePrice.price }} <span>$</span></div>
+                    {% if previousPrice %}
+                        <div class="price-old"><del>{{ previousPrice.price }} $</del></div>
+                    {% endif %}
+                {% endif %}
+            </div>
+            
+            <div class="product-description-modern">
+                <p>{{ product.short_description }}</p>
+            </div>
+            
+            {% if product.sizes is not empty %}
+            <div class="option-section-modern">
+                <label class="option-label-modern">
+                    <i class="fas fa-tshirt"></i>
+                    {{ 'اختر المقاس' }}
+                </label>
+                <div class="size-options-modern">
+                    {% for size in product.sizes %}
+                    <button type="button" class="size-btn" data-size-id="{{ size.id }}">
+                        {{ size.name }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if product.colors is not empty %}
+            <div class="option-section-modern">
+                <label class="option-label-modern">
+                    <i class="fas fa-palette"></i>
+                    {{ 'اختر اللون' }}
+                </label>
+                <div class="color-options-modern">
+                    {% for color in product.colors %}
+                    <button type="button" class="color-btn" data-color-id="{{ color.id }}" 
+                            style="background: {% if color.code %}{{ color.code }}{% else %}#ccc{% endif %};">
+                        <span class="color-tooltip">{{ color.name }}</span>
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="action-buttons-modern">
+                <button class="add-to-cart-modern {% if not user %}login-required{% endif %}" 
+                        {% if user %} 
+                            data-request="onAddToCart" 
+                            data-request-flash 
+                            data-request-data="product_id: {{ product.id }}"
+                        {% else %} 
+                            onclick="location.href='/login'"
+                        {% endif %}>
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>{{ 'أضف إلى السلة' }}</span>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+            
+            <div class="share-section-modern">
+                <span class="share-label">
+                    <i class="fas fa-share-alt"></i>
+                    {{ 'شارك المنتج' }}
+                </span>
+                <div class="share-icons">
+                    {% set shareUrl = url('/detail/' ~ product.slug) %}
+                    {% set shareText = product.name %}
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ shareUrl|url_encode }}" class="share-icon facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/"
+                               target="_blank"
+                               class="share-icon instagram"
+                               onclick="shareToInstagram('{{ shareUrl|escape('js') }}', '{{ shareText|escape('js') }}')">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                    <a href="https://twitter.com/intent/tweet?text={{ shareText|url_encode }}&url={{ shareUrl|url_encode }}" target="_blank" class="share-icon twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://wa.me/?text={{ (shareText ~ ' ' ~ shareUrl)|url_encode }}" target="_blank" class="share-icon whatsapp"><i class="fab fa-whatsapp"></i></a>
+                    <a href="https://t.me/share/url?url={{ shareUrl|url_encode }}&text={{ shareText|url_encode }}" target="_blank" class="share-icon telegram"><i class="fab fa-telegram"></i></a>
+                </div>
+                 
+            </div>
+        </div>
+        
+        <div class="product-tabs-modern">
+            <div class="tabs-header-modern">
+                <button class="tab-btn" data-tab="description">
+                    <i class="fas fa-file-alt"></i>
+                    <span>{{ 'الوصف' }}</span>
+                </button>
+                <button class="tab-btn active" data-tab="reviews">
+                    <i class="fas fa-star"></i>
+                    <span>{{ 'التقييمات' }}</span>
+                    {% if product.comments.count() > 0 %}
+                        <span class="tab-badge">{{ product.comments.count() }}</span>
+                    {% endif %}
+                </button>
+            </div>
+            
+            <div class="tabs-content-modern">
+                <div class="tab-pane" id="tab-description">
+                    <div class="description-content">
+                        {{ product.long_description|raw }}
+                    </div>
+                </div>
+                
+                <div class="tab-pane active" id="tab-reviews">
+                    <div class="reviews-container">
+                        <div class="reviews-list">
+                            {% if product.comments and product.comments.count() > 0 %}
+                                {% for comment in product.comments %}
+                                <div class="review-card">
+                                    <div class="review-header">
+                                        <div class="reviewer-info">
+                                            <div class="reviewer-avatar">
+                                                <img src="{% if comment.user.avatar %}{{ comment.user.avatar.path }}{% else %}https://ui-avatars.com/api/?name={{ comment.user.name|url_encode }}&background=667eea&color=fff{% endif %}" 
+                                                     alt="{{ comment.user.name }}">
+                                            </div>
+                                            <div class="reviewer-details">
+                                                <h6>{{ comment.user.name }}</h6>
+                                                <span class="review-date">{{ comment.created_at|date('Y-m-d') }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="review-rating">
+                                            {% for i in 1..5 %}
+                                                {% if comment.rating >= i %}
+                                                    <i class="fas fa-star"></i>
+                                                {% elseif comment.rating >= (i - 0.5) %}
+                                                    <i class="fas fa-star-half-alt"></i>
+                                                {% else %}
+                                                    <i class="far fa-star"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <span>{{ comment.rating|number_format(1) }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="review-body">
+                                        <p>{{ comment.comment }}</p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="empty-reviews">
+                                    <i class="fas fa-comment-dots"></i>
+                                    <p>{{ 'لا توجد تقييمات بعد' |_ }}</p>
+                                    <span>{{ 'كن أول من يقيم هذا المنتج' |_ }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        {% if user %}
+                        <div class="add-review-form">
+                            <div class="form-header">
+                                <i class="fas fa-edit"></i>
+                                <h4>{{ 'اكتب تقييمك' |_ }}</h4>
+                            </div>
+                            <form data-request="onAddComment" data-request-success="$('#commentText').val(''); resetRating();" data-request-flash id="commentForm">
+                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                
+                                <div class="rating-input">
+                                    <label>{{ 'تقييمك' |_ }} <span class="required">*</span></label>
+                                    <div class="stars-rating">
+                                        {% for i in 1..5 %}
+                                        <i class="far fa-star" data-rate="{{ i }}"></i>
+                                        {% endfor %}
+                                        <input type="hidden" name="rating" id="ratingValue" value="0">
+                                    </div>
+                                </div>
+                                
+                                <div class="comment-input">
+                                    <label for="commentText">{{ 'تعليقك' |_ }} <span class="required">*</span></label>
+                                    <textarea id="commentText" name="comment" rows="4" placeholder="اكتب تجربتك مع المنتج..."></textarea>
+                                </div>
+                                
+                                <button type="submit" class="submit-review-btn">
+                                    <i class="fas fa-paper-plane"></i>
+                                    {{ 'إرسال التقييم' }}
+                                </button>
+                            </form>
+                        </div>
+                        {% else %}
+                        <div class="login-prompt">
+                            <i class="fas fa-lock"></i>
+                            <p>{{ 'يرجى تسجيل الدخول لإضافة تقييم' |_ }}</p>
+                            <a href="/login" class="login-link">
+                                {{ 'تسجيل الدخول' }}
+                                <i class="fas fa-arrow-left"></i>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+var galleryThumbs = new Swiper('.gallery-thumbs', {
+    spaceBetween: 10,
+    slidesPerView: 4,
+    freeMode: true,
+    watchSlidesProgress: true,
+});
+var galleryTop = new Swiper('.gallery-top', {
+    spaceBetween: 10,
+    navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+    },
+    thumbs: {
+        swiper: galleryThumbs,
+    },
+});
+
+// Tab switching functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all tab buttons
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    
+    // Add click event to each button
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const tabId = this.getAttribute('data-tab');
+            
+            // Remove active class from all buttons
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Remove active class from all panes
+            const allPanes = document.querySelectorAll('.tab-pane');
+            allPanes.forEach(pane => {
+                pane.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Add active class to corresponding pane
+            const targetPane = document.getElementById(`tab-${tabId}`);
+            if (targetPane) {
+                targetPane.classList.add('active');
+            }
+        });
+    });
+});
+</script>

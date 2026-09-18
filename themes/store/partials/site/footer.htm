@@ -1,0 +1,108 @@
+<div class="ftr" id="footer">
+    <div class="ftr-container">
+        <!-- القسم العلوي -->
+        <div class="ftr-grid">
+            <!-- معلومات الموقع -->
+            <div class="ftr-col">
+                <a href="" class="ftr-brand">
+                    <h2 class="ftr-logo">
+                        Ecso <span class="ftr-logo-mark">V</span>
+                    </h2>
+                </a>
+                <p class="ftr-text">{{ 'نظام توصيل سريع للمنتجات النسائية' |_ }}</p>
+                <div class="ftr-contacts">
+                    <a href="https://maps.google.com/?q=دمشق، سوريا" target="_blank" class="ftr-contact">
+                        <i class="fa fa-map-marker-alt"></i>
+                        <span>{{ 'سوريا , دمشق' |_ }}</span>
+                    </a>
+                    <a href="mailto:info@venalos.shop" class="ftr-contact">
+                        <i class="fa fa-envelope"></i>
+                        <span>info@venalos.shop</span>
+                    </a>
+                    <a href="https://wa.me/+963983138125" target="_blank" class="ftr-contact">
+                        <i class="fa fa-phone-alt"></i>
+                        <span>+963983138125</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- الروابط -->
+            <div class="ftr-col">
+                <h6 class="ftr-title">{{ 'روابط سريعة' |_ }}</h6>
+                <div class="ftr-links">
+                    <a href="/" class="ftr-link">{{ 'الصفحة الرئيسية' |_ }} <i class="fa fa-angle-left"></i></a>
+                    <a href="/shop" class="ftr-link">{{ 'تصفح' |_ }} <i class="fa fa-angle-left"></i></a>
+                    <a href="/cart" class="ftr-link">{{ 'السلة' |_ }} <i class="fa fa-angle-left"></i></a>
+                    <a href="/checkout" class="ftr-link">{{ 'الدفع' |_ }} <i class="fa fa-angle-left"></i></a>
+                    <a href="/contact" class="ftr-link">{{ 'تواصل' |_ }} <i class="fa fa-angle-left"></i></a>
+                </div>
+            </div>
+
+            <!-- النشرة -->
+            <div class="ftr-col">
+                <h6 class="ftr-title">{{ 'النشرة الإخبارية' |_ }}</h6>
+                <form class="ftr-form" role="form" data-request="onSaveEmail" data-request-success="$('#ftrEmail').val('');" data-request-flash>
+                    <div class="ftr-input-group">
+                        <input type="email" name="email" id="ftrEmail" placeholder="{{ 'بريدك الإلكتروني' |_ }}" required class="ftr-input" />
+                        <button class="ftr-btn" type="submit" data-stripe-load-indicator>
+                            <i class="fa fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- القسم السفلي -->
+        <div class="ftr-bottom">
+            <div class="ftr-copyright">
+                <p>© <a href="#">Venalos</a> <p style="color: white; display: inline-block;">{{ 'جميع الحقوق محفوظة' |_ }} {{ 'بواسطة' |_ }}</p> <a href="https://www.facebook.com/share/1LAQCdgD3B/" target="_blank">{{ 'جابر رسول' |_ }}</a></p>
+            </div>
+            <div class="ftr-social">
+                <a href="https://www.facebook.com/share/18FmuUzTYk/" class="ftr-social-link"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/venalos_shop?igsh=MWozcGk3N3NzODB1bg==" class="ftr-social-link"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/+963983138125" class="ftr-social-link"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ ['assets/lib/easing/easing.min.js'] | theme }}"></script>
+
+    {# <script src="{{ ['assets/js/venalos-loader-screen.js'] | theme }}"></script> #}
+    <script src="{{ ['assets/js/main.js'] | theme }}"></script>
+    <script src="{{ ['assets/js/product.js'] | theme }}"></script>
+    <script src="{{ ['assets/js/category.js'] | theme }}"></script>
+    <script src="{{ ['assets/js/featured.js'] | theme }}"></script>
+    <script src="{{ ['assets/js/topbar.js'] | theme }}"></script>
+
+    
+
+        <!-- Scripts -->
+
+        {# jQuery AJAX Framework #}
+        {# <script src="{{ [
+            '@jquery',
+            '@framework',
+            '@framework.extras',
+        ] | theme }}"></script> #}
+
+        {# Vite extracted assets #}
+
+       
+        {% snowboard all %}
+        {% snowboard request attr %}
+        {% framework extras %}
+        {% scripts %}
+
+        {% flash %}
+            <p data-control="flash-message" data-interval="7" class="flashmessage {{ type }}">
+                {{ message }}
+            </p>
+        {% endflash %}
+    </body>
+</html>

@@ -1,0 +1,61 @@
+title = "سلة التسوق"
+url = "/cart"
+layout = "default"
+[localePicker]
+[Store]
+[Cart]
+[session]
+[sociallogin]
+[PhoneNumberPopup]
+security = "user"
+redirect = "home"
+
+==
+<?php 
+function onStart()
+{
+    $this->addCss('assets/css/cartssssss.css');
+}
+?>
+==
+
+{% if not user %}
+    <script>
+        window.location.href = "{{ 'login'|page }}";
+    </script>
+{% else %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+{% put head %}
+{% partial 'meta/meta'  
+    seodescription='مراجعة سلة التسوق الخاصة بك في متجر فيكسو. يمكنك تعديل الكميات، إزالة المنتجات، أو متابعة الدفع لإتمام طلبك. تسوق آمن ومريح.'
+    seokeywords='سلة التسوق, عربة التسوق, سلة المشتريات, مراجعة الطلب, تعديل الطلب, متابعة الدفع, cart, shopping cart'
+    seorobots='noindex, follow'
+
+    fslintitle='فيكسو | سلة التسوق - مراجعة طلبك'
+    fslindescription='راجعي منتجاتك في سلة التسوق، عدلي الكميات، ثم تابعي الدفع لإتمام طلبك. تجربة تسوق سلسة وآمنة في متجر فيكسو.'
+    fslinimage='assets/img/file.jpeg'
+    fslinurl='/cart'
+    fslintype='website'
+
+    twicard='summary_large_image'
+    twititle='فيكسو - سلة التسوق | راجعي طلبك قبل الدفع'
+    twidescription='راجعي المنتجات التي اخترتها في سلة التسوق، عدلي الكميات، وتابعي الدفع بكل سهولة وأمان. تسوقي بثقة في فيكسو.'
+    twiimage='assets/img/file.jpeg'
+%}
+{% endput %}
+
+
+
+
+{% partial 'site/bottom_nav' cart=true %}
+
+<!-- باقي محتوى صفحة سلة التسوق -->
+{% partial 'home/topbar' %}
+{% partial 'navbar' home=false shop=false cart=true checkout=false contact=false %}
+{% partial 'cart/cart' %}
+
+{% partial 'check_phone_number' %}
+
+
+{% endif %}

@@ -1,0 +1,49 @@
+title = "التسيجيل في الموقع"
+url = "/register"
+layout = "default"
+[localePicker]
+[Store]
+[account]
+[sociallogin]
+redirect = "home"
+paramCode = "code"
+
+==
+<?php 
+function onStart()
+{
+    $this->addCss('assets/css/registerss.css');
+}
+?>
+==
+
+{% put head %}
+{% partial 'meta/meta'  
+    seodescription='انضمي إلى عائلة فيكسو واستمتعي بتجربة تسوق فاخرة. سجلي الآن للحصول على عروض حصرية، خصومات خاصة، وإشعارات بأحدث المنتجات النسائية في سوريا.'
+    seokeywords='تسجيل في الموقع, اشتراك فيكسو, إنشاء حساب, متجر نسائي سوريا, عضوية فيكسو, تسوق أونلاين, حساب جديد'
+    seorobots='index, follow'
+
+    fslintitle='فيكسو | التسجيل في الموقع - انضمي لعائلتنا'
+    fslindescription='سجلي الآن في فيكسو واستمتعي بتجربة تسوق فاخرة. احصلي على عروض حصرية وتابعي أحدث صيحات الموضة والمنتجات النسائية.'
+    fslinimage='assets/img/file.jpeg'
+    fslinurl='/register'
+    fslintype='website'
+
+    twicard='summary_large_image'
+    twititle='فيكسو - سجلي الآن واستمتعي بعروض حصرية'
+    twidescription='انضمي إلى فيكسو اليوم واحصلي على خصومات خاصة، عروض حصرية، وتنبيهات بأحدث المنتجات النسائية في سوريا.'
+    twiimage='assets/img/file.jpeg'
+%}
+{% endput %}
+
+
+{% if user %}
+    <script>
+        window.location.href = "{{ 'home'|page }}";
+    </script>
+{% endif %}
+
+{% partial 'site/bottom_nav' register=true %}
+{% partial 'home/topbar' %}
+{% partial 'navbar' home=false shop=false contact=false %}
+{% partial 'auth/register' home=false shop=false contact=false %}

@@ -1,0 +1,370 @@
+
+<div class="shein-overlay" id="sheinOverlay"></div>
+
+
+<div class="shein-categories-wrapper" id="categoriesWrapper">
+    <div class="shein-categories-container">
+        <div class="shein-categories-scroll" id="categoriesScroll">
+            <a href="/" class="shein-cat-item active has-children" 
+                       >
+                    جميع التصنيفات
+            </a>
+            {% for category in Store.getCateogries %}
+                <button class="shein-cat-item {% if category.subcategories is not empty %}has-children{% endif %}" 
+                        data-category-id="{{ category.id }}"
+                        data-category-name="{{ category.name|escape('html') }}"
+                        data-category-slug="{{ category.slug }}"
+                        data-has-children="{% if category.subcategories is not empty %}true{% else %}false{% endif %}">
+                    {{ category.name }}
+                </button>
+            {% endfor %}
+        </div>
+        <div class="shein-scroll-arrow" id="scrollArrow">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+    </div>
+</div>
+
+
+<div class="shein-dropdown" id="categoryDropdown">
+    <div class="shein-subcategories" id="subcategoriesContent">
+    </div>
+</div>
+
+<div class="shein-brands-wrapper">
+    <div class="shein-brands-scroll" id="brandsScroll">
+               <a href="/" class="shein-cat-item active">جميع العلامات التجارية</a>
+                    
+     
+        {% for brand in Store.Brands %}
+            <a href="/brand/{{ brand.slug }}" class="shein-cat-item">{{ brand.name }}</a>
+        {% endfor %}
+    </div>
+    
+</div>
+
+
+<div class="shein-actions-bar">
+    <a href="/promotions" class="shein-action-item">
+        <i class="fas fa-tags"></i> {{ 'تخفيضات' |_ }}
+    </a>
+    <a href="/promotions" class="shein-action-item">
+        <i class="fas fa-gem"></i> {{ 'جديد' |_ }}
+    </a>
+    <a href="/promotions" class="shein-action-item">
+        <i class="fas fa-star"></i> {{ 'الأكثر مبيعاً' |_ }}
+    </a>
+    <a href="/promotions" class="shein-action-item">
+        <i class="fas fa-fire"></i> {{ 'عروض حصرية' |_ }}
+    </a>
+    <a href="/promotions" class="shein-action-item">
+        <i class="fas fa-chart-line"></i> {{ 'الأعلى تقييماً' |_ }}
+    </a>
+    <a href="/promotions" class="shein-action-item">
+        <i class="fas fa-clock"></i> {{ 'وصل حديثاً' |_ }}
+    </a>
+    <a href="/promotions" class="shein-action-item">
+        <i class="fas fa-percent"></i> {{ 'خصم 50%' |_ }}
+    </a>
+    <a href="/promotions" class="shein-action-item">
+        <i class="fas fa-gift"></i> {{ 'هدايا مجانية' |_ }}
+    </a>
+    <a href="/promotions" class="shein-action-item">
+        <i class="fas fa-truck"></i> {{ 'توصيل سريع' |_ }}
+    </a>
+    <a href="/promotions" class="shein-action-item">
+        <i class="fas fa-shield-alt"></i> {{ 'ضمان الجودة' |_ }}
+    </a>
+    <a href="/promotions" class="shein-action-item">
+        <i class="fas fa-hand-holding-usd"></i> {{ 'أفضل سعر' |_ }}
+    </a>
+    <a href="/promotions" class="shein-action-item">
+        <i class="fas fa-users"></i> {{ 'الأكثر مشاهدة' |_ }}
+    </a>
+</div>
+
+
+
+<div class="shein-full-section">
+    
+
+    
+<div class="main-categories">
+    <div class="categories-grid">
+        {% for subcategory in Store.getTopSubcategories %}
+            <a href="/sub_category/{{ subcategory.slug }}" class="category-icon-card">
+                <div class="category-icon-circle">
+                    {% if subcategory.image.path %}
+                        <img src="{{ subcategory.image.path }}" alt="{{ subcategory.name }}" class="category-image">
+                    {% else %}
+                        <div class="category-icon-placeholder">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <span class="category-name">{{ subcategory.name }}</span>
+                {% if subcategory.products_count %}
+                    <span class="category-count">{{ subcategory.products_count }} منتج</span>
+                {% endif %}
+            </a>
+        {% endfor %}
+    </div>
+</div>
+    
+
+    
+    
+    
+
+
+  
+
+
+
+
+    
+    <div class="section-header">
+        <h3 id='headershownew'>🏷️ ماركات شهيرة</h3>
+        <a href="/shop" id='headershownew' style="color:#ff4757;">جميع الماركات ›</a>
+    </div>
+    <div class="brands-showcase">
+        <div class="brands-grid">
+           {% for brand in Store.getTopBrands %}
+            <a href="/brand/{{ brand.slug }}" class="brand-card">
+                <img src="{% if brand.image.path %}{{ brand.image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %}" alt="{{ brand.name }}">
+                <h4>{{ brand.name }}</h4>
+            </a>
+            {% endfor %}
+
+        </div>
+    </div>
+    
+</div>
+
+
+
+
+
+
+<script>
+const categoriesData = {
+    {% for category in Store.getCateogries %}
+        "{{ category.id }}": {
+            id: "{{ category.id }}",
+            name: "{{ category.name|escape('js') }}",
+            slug: "{{ category.slug }}",
+            subcategories: [
+                {% if category.subcategories is not empty %}
+                    {% for subcategory in category.subcategories %}
+                        {
+                            id: "{{ subcategory.id }}",
+                            name: "{{ subcategory.name|escape('js') }}",
+                            slug: "{{ subcategory.slug }}",
+                            description: "{{ subcategory.description|escape('js')|default('') }}",
+                            imagePath: "{{ subcategory.image.path|default('') }}"
+                        },
+                    {% endfor %}
+                {% endif %}
+            ]
+        },
+    {% endfor %}
+};
+
+const dropdown = document.getElementById('categoryDropdown');
+const overlay = document.getElementById('sheinOverlay');
+const subcategoriesContent = document.getElementById('subcategoriesContent');
+let activeCategoryId = null;
+let hideTimeout;
+
+function showDropdown(categoryId, categoryName, categorySlug, triggerElement) {
+    if (hideTimeout) clearTimeout(hideTimeout);
+    
+    const category = categoriesData[categoryId];
+    
+    if (!category || !category.subcategories || category.subcategories.length === 0) {
+        hideDropdown();
+        return;
+    }
+    
+    activeCategoryId = categoryId;
+    
+    let html = `
+        <div class="shein-subcategory-column-full">
+            <a href="/category/${categorySlug}" class="shein-subcategory-main">
+                ${category.name}
+            </a>
+            <ul class="shein-subcategory-list shein-subcategory-list-full">
+    `;
+    
+    for (const sub of category.subcategories) {
+        const subSlug = sub.slug || sub.id;
+        let imageSrc = 'https://placehold.co/42x42?text=' + encodeURIComponent(sub.name.charAt(0));
+        
+        if (sub.imagePath && sub.imagePath !== '') {
+            imageSrc = sub.imagePath;
+        }
+        
+        html += `
+            <li class="subcategory-list-item">
+                <a href="/sub_category/${subSlug}" class="subcategory-link">
+                    <div class="subcategory-image-wrapper">
+                        <img class="subcategory-circle-img" 
+                             src="${imageSrc}" 
+                             alt="${sub.name}"
+                             onerror="this.onerror=null; this.src='https://placehold.co/42x42?text=${encodeURIComponent(sub.name.charAt(0))}'">
+                    </div>
+                    <span class="subcategory-name">${sub.name}</span>
+                </a>
+            </li>
+        `;
+    }
+    
+    html += `
+            </ul>
+        </div>
+    `;
+    
+    subcategoriesContent.innerHTML = html;
+    
+    if (triggerElement) {
+        const rect = triggerElement.getBoundingClientRect();
+        dropdown.style.top = `${rect.bottom}px`;
+        dropdown.style.position = 'fixed';
+    }
+    
+    dropdown.classList.add('show');
+    overlay.classList.add('show');
+}
+function hideDropdown() {
+    dropdown.classList.remove('show');
+    overlay.classList.remove('show');
+    activeCategoryId = null;
+}
+
+function scrollCategories() {
+    const container = document.getElementById('categoriesScroll');
+    const scrollAmount = 200;
+    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+}
+
+function bindCategoryEvents() {
+    const categoryButtons = document.querySelectorAll('#categoriesScroll .shein-cat-item');
+    
+    categoryButtons.forEach(btn => {
+        btn.removeEventListener('mouseenter', handleMouseEnter);
+        btn.removeEventListener('mouseleave', handleMouseLeave);
+        btn.removeEventListener('click', handleClick);
+        
+        btn.addEventListener('mouseenter', handleMouseEnter);
+        btn.addEventListener('mouseleave', handleMouseLeave);
+        btn.addEventListener('click', handleClick);
+    });
+}
+
+function handleMouseEnter(e) {
+    const btn = e.currentTarget;
+    const categoryId = btn.dataset.categoryId;
+    const categoryName = btn.dataset.categoryName;
+    const categorySlug = btn.dataset.categorySlug;
+    const hasChildren = btn.dataset.hasChildren === 'true';
+    
+    if (hideTimeout) clearTimeout(hideTimeout);
+    
+    if (hasChildren) {
+        showDropdown(categoryId, categoryName, categorySlug, btn);
+    }
+}
+
+function handleMouseLeave(e) {
+    hideTimeout = setTimeout(() => {
+        hideDropdown();
+    }, 200);
+}
+
+function handleClick(e) {
+    const btn = e.currentTarget;
+    const categoryId = btn.dataset.categoryId;
+    const categorySlug = btn.dataset.categorySlug;
+    const hasChildren = btn.dataset.hasChildren === 'true';
+    
+    document.querySelectorAll('#categoriesScroll .shein-cat-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    btn.classList.add('active');
+    
+    if (!hasChildren) {
+        window.location.href = `/category/${categorySlug}`;
+    }
+}
+
+dropdown.addEventListener('mouseenter', () => {
+    if (hideTimeout) clearTimeout(hideTimeout);
+});
+
+dropdown.addEventListener('mouseleave', () => {
+    hideTimeout = setTimeout(() => {
+        hideDropdown();
+    }, 200);
+});
+
+overlay.addEventListener('click', () => {
+    hideDropdown();
+});
+
+document.getElementById('scrollArrow')?.addEventListener('click', scrollCategories);
+
+function makeScrollable(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    
+    container.addEventListener('mousedown', (e) => {
+        isDown = true;
+        container.style.cursor = 'grabbing';
+        startX = e.pageX - container.offsetLeft;
+        scrollLeft = container.scrollLeft;
+    });
+    
+    container.addEventListener('mouseleave', () => {
+        isDown = false;
+        container.style.cursor = 'grab';
+    });
+    
+    container.addEventListener('mouseup', () => {
+        isDown = false;
+        container.style.cursor = 'grab';
+    });
+    
+    container.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - container.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        container.scrollLeft = scrollLeft - walk;
+    });
+    
+    container.style.cursor = 'grab';
+}
+
+makeScrollable('categoriesScroll');
+makeScrollable('brandsScroll');
+bindCategoryEvents();
+
+function checkScrollArrow() {
+    const container = document.getElementById('categoriesScroll');
+    const arrow = document.getElementById('scrollArrow');
+    if (container && arrow) {
+        if (container.scrollWidth > container.clientWidth) {
+            arrow.style.display = 'flex';
+        } else {
+            arrow.style.display = 'none';
+        }
+    }
+}
+
+checkScrollArrow();
+window.addEventListener('resize', checkScrollArrow);
+</script>

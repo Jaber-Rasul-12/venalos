@@ -1,0 +1,258 @@
+<div class="profile-page">
+    <!-- Header Section -->
+    <div class="profile-header">
+        <div class="container-fluid px-3">
+            <div class="profile-cover"></div>
+            <div class="profile-avatar-wrapper">
+                <div class="avatar-container">
+                    <img src="{% if user.avatar.path %}{{ user.avatar.path }}{% else %}{{ 'assets/images/default-avatar.png' | theme }}{% endif %}" 
+                         alt="{{ user.name }}" 
+                         id="profileAvatar"
+                         class="profile-avatar-img">
+                    <button type="button" class="avatar-edit-btn" onclick="openAvatarModal()">
+                        <i class="fa fa-camera"></i>
+                    </button>
+                </div>
+                <div class="profile-info mt-2">
+                    <h3 class="profile-name">{{ user.name }}</h3>
+                    <p class="profile-email">{{ user.email }}</p>
+                    <div class="member-badge">
+                        <i class="fa fa-calendar-alt"></i>
+                        <span>{{ 'عضو منذ' |_ }} {{ user.created_at|date('M Y') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid px-3 mt-2">
+        <!-- Wallet Card -->
+        <div class="wallet-card mb-4">
+            <div class="wallet-content">
+                <div class="wallet-icon">
+                    <i class="fa fa-wallet"></i>
+                </div>
+                <div class="wallet-info">
+                    <p class="wallet-label">{{ 'محفظتي' |_ }}</p>
+                    <h2 class="wallet-balance">{{ user.wallets.current_balance|number_format(2) }} <span class="currency">دولار</span></h2>
+                    <span class="wallet-status">{{ 'الرصيد المتاح' |_ }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Information -->
+        <div class="info-card mb-2">
+            <div class="card-header-custom">
+                <div class="header-icon">
+                    <i class="fa fa-user"></i>
+                </div>
+                <h5 class="header-title">{{ 'معلومات الملف الشخصي' |_ }}</h5>
+            </div>
+            <div class="info-list">
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fa fa-user-circle"></i>
+                        <span>{{ 'الاسم الكامل' |_ }}</span>
+                    </div>
+                    <div class="info-value">{{ user.name }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fa fa-envelope"></i>
+                        <span>{{ 'البريد الإلكتروني' |_ }}</span>
+                    </div>
+                    <div class="info-value">{{ user.email }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fa fa-phone"></i>
+                        <span>{{ 'رقم الهاتف' |_ }}</span>
+                    </div>
+                    <div class="info-value {% if not user.phone %}text-muted{% endif %}">
+                        {{ user.phone ?: 'غير متوفر' }}
+                        {% if not user.phone %}
+                            <button class="add-phone-btn" onclick="showPhonePopup()">
+                                <i class="fa fa-plus-circle"></i> {{ 'أضف رقم' |_ }}
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Password -->
+        <div class="info-card mb-2">
+            <div class="card-header-custom">
+                <div class="header-icon">
+                    <i class="fa fa-lock"></i>
+                </div>
+                <h5 class="header-title">{{ 'تغيير كلمة المرور' |_ }}</h5>
+            </div>
+            <div class="card-body-custom">
+                <form data-request="onChangePasswordNew" data-request-flash>
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fa fa-key"></i>
+                            {{ 'كلمة المرور الحالية' |_ }}
+                        </label>
+                        <input type="password" name="currentPassword" class="form-input-custom" required>
+                    </div>
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fa fa-lock"></i>
+                            {{ 'كلمة المرور الجديدة' |_ }}
+                        </label>
+                        <input type="password" name="newPassword" class="form-input-custom" required>
+                    </div>
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">
+                            <i class="fa fa-check-circle"></i>
+                            {{ 'تأكيد كلمة المرور الجديدة' |_ }}
+                        </label>
+                        <input type="password" name="password_confirmation" class="form-input-custom" required>
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <i class="fa fa-save"></i>
+                        {{ 'تحديث كلمة المرور' |_ }}
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="info-card mb-4">
+            <div class="card-header-custom">
+                <div class="header-icon">
+                    <i class="fa fa-history"></i>
+                </div>
+                <h5 class="header-title">{{ 'النشاط الأخير' |_ }}</h5>
+            </div>
+            <div class="activity-list">
+                {% if user.wallets.transactions is defined and user.wallets.transactions|length > 0 %}
+                    {% for transaction in user.wallets.transactions %}
+                    <div class="activity-item">
+                        <div class="activity-icon {% if transaction.status %}success{% else %}pending{% endif %}">
+                            <i class="fa {% if transaction.status %}fa-check-circle{% else %}fa-clock{% endif %}"></i>
+                        </div>
+                        <div class="activity-details">
+                            <p class="activity-desc">{{ transaction.description }}</p>
+                            <span class="activity-date">{{ transaction.date|date('d/m/Y') }}</span>
+                        </div>
+                        <div class="activity-amount {% if transaction.status %}text-success{% else %}text-warning{% endif %}">
+                            + {{ transaction.amount|number_format(2) }} $
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fa fa-inbox"></i>
+                        <p>{{ 'لا توجد معاملات حتى الآن' |_ }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Avatar Modal -->
+<div id="avatarModal" class="custom-modal" style="display: none;">
+    <div class="modal-overlay" onclick="closeAvatarModal()"></div>
+    <div class="modal-container">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                <i class="fa fa-camera"></i>
+                {{ 'تحديث الصورة الشخصية' |_ }}
+            </h5>
+            <button type="button" class="modal-close" onclick="closeAvatarModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="avatar-preview-container">
+                <img id="avatarPreview" 
+                     src="{% if user.avatar.path %}{{ user.avatar.path }}{% else %}{{ 'assets/images/default-avatar.png' | theme }}{% endif %}" 
+                     class="avatar-preview-img">
+            </div>
+            <form data-request="onUpdateAvatar" 
+                  data-request-flash 
+                  data-request-files 
+                  data-request-success="closeAvatarModal(); location.reload();">
+                <div class="file-upload-wrapper">
+                    <label for="avatarInput" class="file-upload-label">
+                        <i class="fa fa-upload"></i>
+                        {{ 'اختر صورة جديدة' |_ }}
+                    </label>
+                    <input type="file" 
+                           id="avatarInput" 
+                           name="avatar" 
+                           accept="image/jpeg,image/png,image/jpg,image/gif"
+                           class="file-upload-input"
+                           style="display: none;">
+                    <small class="upload-hint">
+                        <i class="fa fa-info-circle"></i>
+                        {{ 'JPG, PNG, GIF - حتى 2 ميجابايت' |_ }}
+                    </small>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeAvatarModal()">{{ 'إلغاء' |_ }}</button>
+                    <button type="submit" class="btn-submit-modal">
+                        <i class="fa fa-check"></i>
+                        {{ 'تحديث' |_ }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function openAvatarModal() {
+        document.getElementById('avatarModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeAvatarModal() {
+        document.getElementById('avatarModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+    
+    function showPhonePopup() {
+        // استدعاء الـ popup الخاص برقم الموبايل
+        var phonePopup = document.getElementById('phoneNumberPopup');
+        if (phonePopup) {
+            phonePopup.style.display = 'flex';
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const avatarInput = document.getElementById('avatarInput');
+        if (avatarInput) {
+            avatarInput.addEventListener('change', function(e) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const avatarPreview = document.getElementById('avatarPreview');
+                    if (avatarPreview) {
+                        avatarPreview.src = event.target.result;
+                    }
+                }
+                if (e.target.files && e.target.files[0]) {
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+        }
+        
+        const modal = document.getElementById('avatarModal');
+        if (modal) {
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal || e.target.classList.contains('modal-overlay')) {
+                    closeAvatarModal();
+                }
+            });
+        }
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeAvatarModal();
+            }
+        });
+    });
+</script>

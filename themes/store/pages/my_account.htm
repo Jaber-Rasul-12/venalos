@@ -1,0 +1,59 @@
+title = "حسابي الشخصي"
+url = "/my-account"
+layout = "default"
+[localePicker]
+[Cart]
+[Store]
+[AccountUserFrontEnd]
+[session]
+[sociallogin]
+[PhoneNumberPopup]
+security = "user"
+redirect = "home"
+==
+<?php 
+function onStart()
+{
+    $this->addCss('assets/css/my_accountss.css');
+}
+?>
+==
+
+{% if not user %}
+    <script>
+        window.location.href = "{{ 'login'|page }}";
+    </script>
+{% else %}
+
+{% put head %}
+{% partial 'meta/meta'  
+    seodescription='إدارة حسابك الشخصي في فيكسو. تابعي طلباتك، عدلي معلوماتك، استعرضي مشترياتك السابقة واستمتعي بتجربة تسوق مخصصة تناسب ذوقك.'
+    seokeywords='حسابي الشخصي, حساب فيكسو, طلباتي, إدارة الحساب, ملف شخصي, سجل الطلبات, عنوان التوصيل, فيكسو'
+    seorobots='noindex, follow'
+
+    fslintitle='فيكسو | حسابي الشخصي - إدارة طلباتي ومعلوماتي'
+    fslindescription='من هنا يمكنك إدارة حسابك بالكامل: تتبعي طلباتك، حدثي بياناتك، استعرضي مشترياتك السابقة واستفيدي من العروض الحصرية للأعضاء.'
+    fslinimage='assets/img/file.jpeg'
+    fslinurl='/my-account'
+    fslintype='website'
+
+    twicard='summary_large_image'
+    twititle='فيكسو - حسابي الشخصي | تابعي طلباتك بسهولة'
+    twidescription='إدارة كاملة لحسابك في فيكسو. تتبعي الشحنات، عدلي معلوماتك، واستعرضي تاريخ مشترياتك في مكان واحد.'
+    twiimage='assets/img/file.jpeg'
+%}
+{% endput %}
+
+
+
+
+{% partial 'site/bottom_nav' %}
+
+{% partial 'home/topbar' %}
+{% partial 'navbar' home=false shop=false contact=false %}
+{% partial 'my_account/my_account' %}
+
+
+{% partial 'check_phone_number' %}
+
+{% endif %}

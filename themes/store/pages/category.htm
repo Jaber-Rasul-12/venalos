@@ -1,0 +1,58 @@
+title = "التصنيفات"
+url = "/category/:slug"
+layout = "default"
+slug = "{{ :slug }}"
+[localePicker]
+[Store]
+[session]
+[Cart]
+[sociallogin]
+[PhoneNumberPopup]
+== 
+
+<?php
+function onStart()
+{
+    $slug = $this->param('slug');
+    $category = \Store\Store\Models\Category::where('slug', $slug)->first();
+
+    $catName = $category->name;
+    
+    $this['meta_description'] = 'اكتشفي أحدث منتجات ' . $catName . ' في متجر فيكسو ✨ تشكيلة واسعة من المنتجات النسائية الفاخرة. تسوقي بأمان وتوصيل سريع لجميع أنحاء سوريا.';
+    $this['meta_keywords'] = $catName . ', ' . $catName . ' فيكسو, منتجات ' . $catName . ', تسوق ' . $catName . ' أونلاين, متجر نسائي سوريا';
+    $this['og_title'] = 'فيكسو | ' . $catName . ' - أحدث التشكيلات';
+    $this['og_description'] = 'تسوقي أحدث منتجات ' . $catName . ' من فيكسو. جودة عالية وأسعار مميزة مع توصيل سريع لجميع أنحاء سوريا.';
+    $this['og_url'] = 'category/' . $slug;
+    $this['twitter_title'] = 'فيكسو - ' . $catName . ' | تسوقي بأسلوبك';
+    $this['twitter_description'] = 'تشكيلة مميزة من ' . $catName . ' في متجر فيكسو. منتجات أصلية بأسعار تنافسية وتوصيل سريع.';
+}
+?>
+
+==
+
+{% put head %}
+{% partial 'meta/meta'  
+    seodescription=meta_description
+    seokeywords=meta_keywords
+    seorobots='index, follow'
+    fslintitle=og_title
+    fslindescription=og_description
+    fslinimage='assets/img/file.jpeg'
+    fslinurl=og_url
+    fslintype='website'
+    twicard='summary_large_image'
+    twititle=twitter_title
+    twidescription=twitter_description
+    twiimage='assets/img/file.jpeg'
+%}
+{% endput %}
+
+{% partial 'site/bottom_nav' %}
+   {% partial 'home/topbar' %}
+
+   {% partial 'navbar' home=false  shop=true contact=false %}
+
+
+   {% if Store.onGetProductsWhereCategory is not empty %} {% partial 'category/products' relateds=Store.onGetRelatedCategories title_product='منتجات مميزة' name_component=Store.onGetProductsWhereCategory %} {% endif %}
+
+{% partial 'check_phone_number' %}

@@ -1,0 +1,61 @@
+
+<!-- شاشة التحميل venalos PRO -->
+<div class="venalos-loader-screen" id="venalosLoaderScreen">
+    <!-- دوائر خلفية متحركة -->
+    <div class="venalos-bg-circles">
+        <div class="venalos-bg-circle"></div>
+        <div class="venalos-bg-circle"></div>
+        <div class="venalos-bg-circle"></div>
+    </div>
+
+    <div class="venalos-loader-container">
+        <!-- SVG للحلقة -->
+        <svg style="display: none;">
+            <defs>
+                <linearGradient id="gradientRing" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#D98FA3" />
+                    <stop offset="50%" stop-color="#ffffff" />
+                    <stop offset="100%" stop-color="#D98FA3" />
+                </linearGradient>
+            </defs>
+        </svg>
+
+        <!-- اللوجو مع الحلقة -->
+        <div class="venalos-logo-wrapper">
+            <div class="venalos-logo-ring">
+                <svg viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="55" />
+                    <circle cx="60" cy="60" r="55" stroke="url(#gradientRing)" />
+                </svg>
+            </div>
+            <div class="venalos-logo-box">
+                <img src="{{ 'assets/img/logo.webp' | theme }}" alt="Venalos">
+            </div>
+        </div>
+
+        <!-- النص الرئيسي -->
+        <div class="venalos-title">
+            <div class="venalos-title-text">Venalos</div>
+        </div>
+
+        <!-- بار التحميل المتقدم -->
+        <div class="venalos-progress-section">
+            <div class="venalos-progress-bar-container">
+                <div class="venalos-progress-fill"></div>
+            </div>
+            <div class="venalos-loading-status">
+                <span>جاري التحميل</span>
+                <div class="venalos-loading-dots">
+                    <span>.</span><span>.</span><span>.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- نقاط متحركة -->
+        <div class="venalos-dots-group">
+            <div class="venalos-dot"></div>
+            <div class="venalos-dot"></div>
+            <div class="venalos-dot"></div>
+        </div>
+    </div>
+</div>

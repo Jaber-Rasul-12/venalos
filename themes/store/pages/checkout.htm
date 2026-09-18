@@ -1,0 +1,58 @@
+title = "الدفع"
+url = "/checkout"
+layout = "default"
+[localePicker]
+[Cart]
+[Store]
+[session]
+[sociallogin]
+[PhoneNumberPopup]
+security = "user"
+redirect = "home"
+==
+<?php 
+function onStart()
+{
+    $this->addCss('assets/css/checkouts.css');
+}
+?>
+==
+
+
+{% if not user %}
+    <script>
+        window.location.href = "{{ 'login'|page }}";
+    </script>
+{% else %}
+
+{% put head %}
+{% partial 'meta/meta'  
+    seodescription='أكملي عملية الدفع بأمان في متجر فيكسو. طلبك آمن ومحمي، نوفر خيارات دفع متعددة وتوصيل سريع لجميع أنحاء سوريا. إتمام الشراء بكل ثقة.'
+    seokeywords='الدفع, إتمام الشراء, checkout, سلة التسوق, دفع آمن, توصيل سريع, إتمام الطلب, شراء منتجات نسائية'
+    seorobots='noindex, follow'
+
+    fslintitle='فيكسو | الدفع - إتمام طلبك بأمان'
+    fslindescription='أكملي عملية شرائك من فيكسو بكل أمان وثقة. نوفر لك خيارات دفع متعددة وتوصيل سريع لجميع أنحاء سوريا. تسوقي بكل راحة.'
+    fslinimage='assets/img/file.jpeg'
+    fslinurl='/checkout'
+    fslintype='website'
+
+    twicard='summary_large_image'
+    twititle='فيكسو - الدفع | إتمام طلبك بأمان وسرعة'
+    twidescription='أكملي عملية الدفع في فيكسو. طلبك آمن ومحمي، مع خيارات دفع متعددة وتوصيل سريع لجميع أنحاء سوريا. تسوقي بثقة.'
+    twiimage='assets/img/file.jpeg'
+%}
+{% endput %}
+
+
+
+{% partial 'site/bottom_nav' checkout=true %}
+{% partial 'home/topbar' %}
+   {% partial 'navbar' home=false  shop=false cart=false checkout=true contact=false %}
+   {# {% partial 'page_header' title='الدفع' name_page='الدفع'  %}    #}
+   {% partial 'checkout/checkout' %}
+{% partial 'check_phone_number' %}
+
+
+
+{% endif %}

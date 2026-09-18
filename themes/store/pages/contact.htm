@@ -1,0 +1,52 @@
+title = "اتصل بنا"
+url = "/contact"
+layout = "default"
+[localePicker]
+[Store]
+[session]
+[Cart]
+[sociallogin]
+[PhoneNumberPopup]
+==
+
+<?php 
+function onStart()
+{
+    $this->addCss('assets/css/contact.css');
+}
+?>
+==
+ 
+{% put head %}
+{% partial 'meta/meta'  
+    seodescription='تواصلي مع فريق فيكسو ✨ نحن هنا لمساعدتك 24/7. استفسري عن المنتجات، الطلبات، التوصيل أو أي سؤال يخص تجربة تسوقك. خدمة عملاء ودية وسريعة الاستجابة.'
+    seokeywords='اتصل بنا, خدمة عملاء فيكسو, دعم فني, استفسارات, تواصل مع فيكسو, contact us, customer service, مساعدة'
+    seorobots='index, follow'
+
+    fslintitle='فيكسو | اتصل بنا - خدمة عملاء على مدار الساعة'
+    fslindescription='لديك سؤال أو استفسار؟ فريق دعم فيكسو جاهز لمساعدتك. تواصلي معنا عبر الهاتف، البريد الإلكتروني، أو نموذج الاتصال السريع.'
+    fslinimage='assets/img/file.jpeg'
+    fslinurl='/contact'
+    fslintype='website'
+
+    twicard='summary_large_image'
+    twititle='فيكسو - اتصل بنا | نسعد بخدمتك 24/7'
+    twidescription='فريق دعم فيكسو في انتظارك! لأي استفسار بخصوص الطلبات، التوصيل، أو المنتجات، تواصلي معنا الآن وسنرد عليك بأسرع وقت.'
+    twiimage='assets/img/file.jpeg'
+%}
+{% endput %}
+
+
+{% partial 'site/bottom_nav' %}
+   {% partial 'home/topbar' %}
+
+   {% partial 'navbar' home=false  shop=false contact=true %}
+
+   {# {% partial 'page_header' title='اتصل بنا' name_page='قسم التواصل'  %} #}
+
+   {% partial 'contact/contact' %}
+
+
+
+{% partial 'check_phone_number' %}
+

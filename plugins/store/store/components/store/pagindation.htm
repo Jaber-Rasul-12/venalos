@@ -1,0 +1,15 @@
+{% if GetAllProducts.hasMorePages %}
+<div style="text-align: center; padding: 10px;" id="loadMoreContainer">
+    <button 
+        class="btn btn-primary load-more-btn" 
+        id="loadMoreBtn"
+        style="color: #efefef;"
+        data-request="{{ nameAlgorithm }}"
+        data-request-data="page: {{ GetAllProducts.currentPage + 1 }}, slug: '{{ this.param.slug }}'"
+        >
+        <i class="fas fa-arrow-down me-2"></i>
+        {{ 'شاهد المزيد' |_ }}
+        <span class="spinner-border spinner-border-sm d-none" id="loadingSpinner"></span>
+    </button>
+</div>
+{% endif %}

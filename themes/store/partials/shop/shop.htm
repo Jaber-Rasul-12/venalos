@@ -1,0 +1,435 @@
+
+
+<div class="mshop-container">
+    
+    <div class="mshop-filter-bar">
+        <div class="mshop-filter-header">
+            <div class="mshop-filter-title">
+                <i class="fas fa-filter"></i>
+                <span>فلترة المنتجات</span>
+            </div>
+            <div class="mshop-filter-actions">
+                <a class="mshop-btn mshop-btn-outline" href="/shop">
+                    <i class="fas fa-undo"></i> إعادة تعيين
+                </a>
+            </div>
+        </div>
+        
+        <div class="mshop-filter-scopes">
+            <a href="javascript:;" class="mshop-filter-scope" data-scope="price">
+                <span class="filter-label">السعر:</span>
+                <span class="filter-setting" id="priceSetting">الكل</span>
+            </a>
+            
+            <a href="javascript:;" class="mshop-filter-scope" data-scope="colors">
+                <span class="filter-label">الألوان:</span>
+                <span class="filter-setting" id="colorSetting">الكل</span>
+            </a>
+            
+            <a href="javascript:;" class="mshop-filter-scope" data-scope="sizes">
+                <span class="filter-label">الأحجام:</span>
+                <span class="filter-setting" id="sizeSetting">الكل</span>
+            </a>
+        </div>
+        
+        <div class="mshop-filter-panel" data-panel="price">
+            <div class="mshop-panel-content">
+                <div class="mshop-panel-section" style="flex: 2">
+                    <h4>تحديد نطاق السعر</h4>
+                    <div class="mshop-price-range-panel">
+                        <div class="mshop-slider-container">
+                            <div class="mshop-slider-track"></div>
+                            <div class="mshop-slider-range" id="priceRangeBackend"></div>
+                            <input type="range" class="mshop-slider" id="minSliderBackend" min="0" max="1000" value="0" step="1">
+                            <input type="range" class="mshop-slider" id="maxSliderBackend" min="0" max="1000" value="500" step="1">
+                        </div>
+                        <div class="mshop-price-inputs">
+                            <div class="mshop-price-input-group">
+                                <span>$</span>
+                                <input type="number" id="minPriceBackend" value="0" min="0" max="1000">
+                            </div>
+                            <div class="mshop-price-input-group">
+                                <span>$</span>
+                                <input type="number" id="maxPriceBackend" value="500" min="0" max="1000">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mshop-panel-actions">
+                <button class="mshop-btn mshop-btn-primary" onclick="applyPriceFilterBackend()">
+                    <i class="fas fa-check"></i> تطبيق
+                </button>
+                <button class="mshop-btn mshop-btn-outline" onclick="clearPriceFilterBackend()">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+            </div>
+        </div>
+        
+        <div class="mshop-filter-panel" data-panel="colors">
+            <div class="mshop-panel-content">
+                <div class="mshop-panel-section">
+                    <h4>اختر الألوان</h4>
+                    <div class="mshop-options-list">
+                        {% for color in Store.onGetAllColors %}
+                            {% if color.products.count > 0 %}
+                                <div class="mshop-option-item">
+                                    <label>
+                                        <input type="checkbox" class="color-checkbox-backend" value="{{ color.code }}" data-color-name="{{ color.name }}">
+                                        <span>
+                                            <span class="mshop-color-dot" style="background-color: {{ color.code }};"></span>
+                                            {{ color.name }}
+                                        </span>
+                                    </label>
+                                    <span class="mshop-option-count">{{ color.products.count }}</span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="mshop-panel-actions">
+                <button class="mshop-btn mshop-btn-primary" onclick="applyColorsFilterBackend()">
+                    <i class="fas fa-check"></i> تطبيق
+                </button>
+                <button class="mshop-btn mshop-btn-outline" onclick="clearColorsFilterBackend()">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+            </div>
+        </div>
+        
+        <div class="mshop-filter-panel" data-panel="sizes">
+            <div class="mshop-panel-content">
+                <div class="mshop-panel-section">
+                    <h4>اختر الأحجام</h4>
+                    <div class="mshop-options-list">
+                        {% for size in Store.onGetAllSizes %}
+                            {% if size.products.count > 0 %}
+                                <div class="mshop-option-item">
+                                    <label>
+                                        <input type="checkbox" class="size-checkbox-backend" value="{{ size.name }}" data-size-name="{{ size.name }}">
+                                        {{ size.name }}
+                                    </label>
+                                    <span class="mshop-option-count">{{ size.products.count }}</span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="mshop-panel-actions">
+                <button class="mshop-btn mshop-btn-primary" onclick="applySizesFilterBackend()">
+                    <i class="fas fa-check"></i> تطبيق
+                </button>
+                <button class="mshop-btn mshop-btn-outline" onclick="clearSizesFilterBackend()">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mshop-search-wrapper">
+        <form data-request="onSearchProductsOnShop">
+            <input type="text" name="text" data-track-input class="mshop-search-input" placeholder="ابحث عن منتج...">
+            <i class="fas fa-search mshop-search-icon"></i>
+        </form>
+    </div>
+    
+    <div class="mshop-products-grid" id="mshop-products-list">
+        {% for product in Store.onGetAllProducts %}
+            <div class="mshop-product-card">
+                {% if product.HasPromotions == true %}
+                    <div class="mshop-sale-badge">
+                        {{ product.promotionsActive.discount_value }}% OFF
+                    </div>
+                {% endif %}
+                
+                <div class="mshop-rating">
+                    <i class="fas fa-star"></i> {{ product.averageRating | default(0) }}
+                </div>
+                
+                <div class="mshop-image-wrapper">
+                    <img src="{% if product.image.path %}{{ product.image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %}"
+                         class="mshop-product-img"
+                         alt="{{ product.name }}">
+                </div>
+                
+                <div class="mshop-product-info">
+                    <h6 class="mshop-product-name">{{ product.name }}</h6>
+                    
+                    {% set activePrice = null %}
+                    {% set previousPrice = null %}
+                    
+                    {% for price in product.prices %}
+                        {% if price.status == true %}
+                            {% set activePrice = price %}
+                            {% if loop.index0 > 0 %}
+                                {% set previousPrice = product.prices[loop.index0 - 1] %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    <div class="mshop-price-container">
+                        {% if activePrice %}
+                            <span class="mshop-current-price">{{ activePrice.price }} $</span>
+                            {% if previousPrice %}
+                                <span class="mshop-old-price">{{ previousPrice.price }} $</span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mshop-product-actions">
+                    <a href="detail/{{ product.slug }}" class="mshop-action-btn mshop-action-view">
+                        <i class="fas fa-eye"></i> عرض
+                    </a>
+                    <a {% if user %} data-request="onAddToCart" data-request-flash data-request-data="product_id: {{ product.id }}" {% else %} href="/login" {% endif %} class="mshop-action-btn mshop-action-cart">
+                        <i class="fas fa-shopping-cart"></i> إضافة
+                    </a>
+                </div>
+
+                 <div class="card-footer bg-light border-top-0">
+                        <div class="d-flex justify-content-around align-items-center">
+                            <!-- ربط المنتج للمشاركة -->
+                            {% set shareUrl = url('/detail/' ~ product.slug) %}
+                            {% set shareText = product.name %}
+                            
+                            <!-- مشاركة على Facebook -->
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ shareUrl|url_encode }}"
+                               target="_blank"
+                               class="btn btn-sm btn-outline-primary rounded-circle"
+                               style="width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center;"
+                               title="مشاركة على فيسبوك">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            
+                            <!-- مشاركة على WhatsApp -->
+                            <a href="https://wa.me/?text={{ (shareText ~ ' ' ~ shareUrl)|url_encode }}"
+                               target="_blank"
+                               class="btn btn-sm btn-outline-success rounded-circle"
+                               style="width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center;"
+                               title="مشاركة على واتساب">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                            
+                            <!-- مشاركة على Instagram (توجيه إلى المنشور أو فتح التطبيق) -->
+                            <a href="https://www.instagram.com/"
+                               target="_blank"
+                               class="btn btn-sm btn-outline-danger rounded-circle"
+                               style="width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center;"
+                               title="مشاركة على انستغرام"
+                               onclick="shareToInstagram('{{ shareUrl|escape('js') }}', '{{ shareText|escape('js') }}')">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            
+                            <!-- نسخ الرابط (إضافة مفيدة) -->
+                            <button onclick="copyToClipboard('{{ shareUrl|escape('js') }}')"
+                                    class="btn btn-sm btn-outline-secondary rounded-circle"
+                                    style="width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center;"
+                                    title="نسخ الرابط">
+                                <i class="fas fa-link"></i>
+                            </button>
+                        </div>
+                    </div>
+            </div>
+        {% else %}
+            <div class="mshop-empty-state" style="grid-column: 1/-1; text-align: center; padding: 60px;">
+                <div style="font-size: 48px; margin-bottom: 16px;">🛍️</div>
+                <div style="font-size: 18px; font-weight: 600; color: var(--mshop-dark);">لا توجد منتجات</div>
+                <div style="font-size: 14px; color: var(--mshop-gray);">لم يتم العثور على منتجات مطابقة</div>
+            </div>
+        {% endfor %}
+    </div>
+    
+<div id="pagindation">
+{% if Store.onGetAllProducts.hasMorePages %}
+<div style="text-align: center; padding: 10px;" id="loadMoreContainer">
+    <button 
+        class="btn btn-primary load-more-btn" 
+        id="loadMoreBtn"
+        style="color: #efefef;"
+        data-request="onGetAllProducts"
+        data-request-data="page: {{ Store.onGetAllProducts.currentPage + 1 }}, slug: '{{ this.param.slug }}'"
+        data-stripe-load-indicator
+        style=";">
+        <i class="fas fa-arrow-down me-2"></i>
+        {{ 'شاهد المزيد' |_ }}
+    </button>
+</div>
+{% endif %}
+</div>
+</div>
+
+<script>
+    document.querySelectorAll('.mshop-filter-scope[data-scope]').forEach(scope => {
+        scope.addEventListener('click', function(e) {
+            e.preventDefault();
+            const scopeName = this.getAttribute('data-scope');
+            const targetPanel = document.querySelector(`.mshop-filter-panel[data-panel="${scopeName}"]`);
+            const allPanels = document.querySelectorAll('.mshop-filter-panel');
+            
+            allPanels.forEach(panel => {
+                if (panel !== targetPanel) {
+                    panel.classList.remove('active');
+                }
+            });
+            
+            targetPanel.classList.toggle('active');
+        });
+    });
+    
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.mshop-filter-bar')) {
+            document.querySelectorAll('.mshop-filter-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+        }
+    });
+    
+    const minSlider = document.getElementById('minSliderBackend');
+    const maxSlider = document.getElementById('maxSliderBackend');
+    const minPrice = document.getElementById('minPriceBackend');
+    const maxPrice = document.getElementById('maxPriceBackend');
+    const priceRange = document.getElementById('priceRangeBackend');
+    const priceSetting = document.getElementById('priceSetting');
+    
+    function updatePriceBackend() {
+        let min = parseInt(minSlider.value);
+        let max = parseInt(maxSlider.value);
+        
+        if (min > max) {
+            [min, max] = [max, min];
+            minSlider.value = min;
+            maxSlider.value = max;
+        }
+        
+        minPrice.value = min;
+        maxPrice.value = max;
+        
+        const percentMin = (min / minSlider.max) * 100;
+        const percentMax = (max / maxSlider.max) * 100;
+        
+        if (priceRange) {
+            priceRange.style.left = percentMin + '%';
+            priceRange.style.width = (percentMax - percentMin) + '%';
+        }
+    }
+    
+    if (minSlider && maxSlider) {
+        minSlider.addEventListener('input', updatePriceBackend);
+        maxSlider.addEventListener('input', updatePriceBackend);
+        minPrice.addEventListener('change', function() {
+            minSlider.value = this.value;
+            updatePriceBackend();
+        });
+        maxPrice.addEventListener('change', function() {
+            maxSlider.value = this.value;
+            updatePriceBackend();
+        });
+        updatePriceBackend();
+    }
+    
+    function applyPriceFilterBackend() {
+        const min = minPrice.value;
+        const max = maxPrice.value;
+        priceSetting.innerText = `$${min} - $${max}`;
+        
+        $.request('onFilterProductsWithPrice', {
+            data: { minPrice: min, maxPrice: max },
+            
+        });
+        
+        document.querySelector(`.mshop-filter-panel[data-panel="price"]`).classList.remove('active');
+    }
+    
+    function clearPriceFilterBackend() {
+        if (minSlider && maxSlider) {
+            minSlider.value = 0;
+            maxSlider.value = 1000;
+            updatePriceBackend();
+        }
+        priceSetting.innerText = 'الكل';
+        document.querySelector(`.mshop-filter-panel[data-panel="price"]`).classList.remove('active');
+    }
+    
+    const colorSettingSpan = document.getElementById('colorSetting');
+    
+    function updateColorSetting() {
+        const selectedColors = document.querySelectorAll('.color-checkbox-backend:checked');
+        if (selectedColors.length === 0) {
+            colorSettingSpan.innerText = 'الكل';
+        } else if (selectedColors.length === 1) {
+            colorSettingSpan.innerText = selectedColors[0].getAttribute('data-color-name');
+        } else {
+            colorSettingSpan.innerText = `${selectedColors.length} ألوان`;
+        }
+    }
+    
+    function applyColorsFilterBackend() {
+        const selectedColors = Array.from(document.querySelectorAll('.color-checkbox-backend:checked')).map(cb => cb.value);
+        
+        if (selectedColors.length > 0) {
+            $.request('onFilterProductsWithColor', {
+                data: { colors: selectedColors },
+                
+            });
+        }
+        updateColorSetting();
+        document.querySelector(`.mshop-filter-panel[data-panel="colors"]`).classList.remove('active');
+    }
+    
+    function clearColorsFilterBackend() {
+        document.querySelectorAll('.color-checkbox-backend').forEach(cb => cb.checked = false);
+        updateColorSetting();
+        document.querySelector(`.mshop-filter-panel[data-panel="colors"]`).classList.remove('active');
+    }
+    
+    const sizeSettingSpan = document.getElementById('sizeSetting');
+    
+    function updateSizeSetting() {
+        const selectedSizes = document.querySelectorAll('.size-checkbox-backend:checked');
+        if (selectedSizes.length === 0) {
+            sizeSettingSpan.innerText = 'الكل';
+        } else if (selectedSizes.length === 1) {
+            sizeSettingSpan.innerText = selectedSizes[0].getAttribute('data-size-name');
+        } else {
+            sizeSettingSpan.innerText = `${selectedSizes.length} أحجام`;
+        }
+    }
+    
+    function applySizesFilterBackend() {
+        const selectedSizes = Array.from(document.querySelectorAll('.size-checkbox-backend:checked')).map(cb => cb.value);
+        
+        if (selectedSizes.length > 0) {
+            $.request('onFilterProductsWithSizes', {
+                data: { sizes: selectedSizes },
+                
+            });
+        }
+        updateSizeSetting();
+        document.querySelector(`.mshop-filter-panel[data-panel="sizes"]`).classList.remove('active');
+    }
+    
+    function clearSizesFilterBackend() {
+        document.querySelectorAll('.size-checkbox-backend').forEach(cb => cb.checked = false);
+        updateSizeSetting();
+        document.querySelector(`.mshop-filter-panel[data-panel="sizes"]`).classList.remove('active');
+    }
+    
+    function resetAllFiltersBackend() {
+        clearPriceFilterBackend();
+        clearColorsFilterBackend();
+        clearSizesFilterBackend();
+        
+        const activeCheckbox = document.getElementById('showActiveOnly');
+        if (activeCheckbox) activeCheckbox.checked = false;
+    }
+    
+    document.querySelectorAll('.color-checkbox-backend').forEach(cb => {
+        cb.addEventListener('change', updateColorSetting);
+    });
+    
+    document.querySelectorAll('.size-checkbox-backend').forEach(cb => {
+        cb.addEventListener('change', updateSizeSetting);
+    });
+</script>

@@ -1,0 +1,58 @@
+title = "تصفح متجرنا"
+url = "/shop"
+layout = "default"
+[localePicker]
+[Store]
+[session]
+[Cart]
+[sociallogin]
+[PhoneNumberPopup]
+==
+<?php 
+function onStart()
+{
+    $this->addCss('assets/css/shop3.css');
+}
+?>
+==
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+{% put head %}
+{% partial 'meta/meta'  
+    seodescription='فيكسو ✨ متجرك الأول للمنتجات النسائية الفاخرة. تسوقي أحدث صيحات الموضة، العطور، الإكسسوارات، ومنتجات العناية بالبشرة. توصيل سريع وآمن لجميع أنحاء سوريا.'
+    seokeywords='فيكسو, متجر نسائي, منتجات نسائية, موضة, أزياء, عطور, إكسسوارات, مكياج, عناية بالبشرة, تسوق أونلاين, متجر سوريا'
+    seorobots='index, follow'
+
+    fslintitle='فيكسو | متجر المنتجات النسائية الفاخرة - تسوقي الآن'
+    fslindescription='تسوقي من فيكسو أحدث التشكيلات من الملابس، العطور، الإكسسوارات ومنتجات التجميل. تجربة تسوق فريدة تناسب ذوقك الرفيع مع توصيل سريع.'
+    fslinimage='assets/img/file.jpeg'
+    fslinurl='/shop'
+    fslintype='website'
+
+    twicard='summary_large_image'
+    twititle='فيكسو - متجر المنتجات النسائية | تسوقي بأسلوبك'
+    twidescription='تشكيلة واسعة من الملابس، العطور، المكياج والإكسسوارات. توصيل مجاني للطلبات فوق الحد المحدد. اكتشفي فيكسو اليوم.'
+    twiimage='assets/img/file.jpeg'
+%}
+{% endput %}
+
+
+
+{% partial 'site/bottom_nav' shop=true %}
+   {% partial 'home/topbar' %}
+   {% partial 'navbar' home=false  shop=true contact=false %}
+   {# {% partial 'page_header' title='تصفح متجرنا' name_page='تصفح المتجر'  %} #}
+   {% partial 'shop/shop'  %}
+
+
+{% partial 'check_phone_number' %}
+
+
+
+
+
+
+
+  
+
+

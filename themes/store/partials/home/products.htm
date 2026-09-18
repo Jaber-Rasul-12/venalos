@@ -1,0 +1,140 @@
+
+
+    <div class="container-fluid pt-2" id="{{ idsection }}">
+        <div style="text-align: center;">
+            <h2 class="section-title px-5"><span class="px-2">{{ title_product }}</span></h2>
+        </div>
+        <div class="row px-xl-5 pb-3" id="row-product" style="justify-content: center;">
+
+        {% for product in name_component %}
+
+           
+
+            <div class="col-lg-2 col-md-6 col-sm-12 animate-on-scroll">
+<a href="/detail/{{ product.slug }}">
+                <div class="card product-item border-0 mb-4">
+                    {% if product.HasPromotions == true  %}
+                    <div class="badge-sale">{{ product.promotionsActive.discount_value }} %</div>
+                    {% endif %}
+                    <div class="featured-tag">{{ title_product }}</div>
+                    <div class="star-rating">
+                        <i class="fas fa-star"></i> {{ product.averageRating | default(0) }}
+                    </div>
+                    
+                    <div class="card-header bg-transparent border p-0">
+                        <div class="image-container">
+                            <img src="{% if product.image.path %}{{ product.image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %}"
+                                 class="product-image">
+                        </div>
+                    </div>
+                    
+                    <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                        <h6 class="text-truncate mb-3">{{ product.name }}</h6>
+                        <div class="d-flex justify-content-center product-flex position-relative ">
+                          {% set activePrice = null %}
+                            {% set previousPrice = null %}
+                            
+                            {% for price in product.prices %}
+                                {% if price.status == true %}
+                                    {% set activePrice = price %}
+                                    {% if loop.index0 > 0 %}
+                                        {% set previousPrice = product.prices[loop.index0 - 1] %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if activePrice %}
+                            <h6 class="price_number"  style="padding: 10px; color: green;">{{ activePrice.price }} $</h6>
+                            {% if previousPrice %}
+                            <h6 class="text-muted ml-2" style="padding: 10px"><del>{{ previousPrice.price }} $</del></h6>
+                            {% endif %}
+
+                            {% endif %}
+
+
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer d-flex justify-content-between bg-light border">
+                        <a {% if user %} data-request="onAddToCart" data-request-flash data-request-data="product_id: {{ product.id }}" {% else %} href="/login" {% endif %} class="btn btn-custom btn-sm text-dark p-0">
+                            <i class="fas fa-shopping-cart   mr-1"></i>{{ 'أضف إلى السلة' |_ }}
+                        </a>
+                    </div>
+
+                      <div class="card-footer bg-light border-top-0">
+                        <div class="d-flex justify-content-around align-items-center">
+                            <!-- ربط المنتج للمشاركة -->
+                            {% set shareUrl = url('/detail/' ~ product.slug) %}
+                            {% set shareText = product.name %}
+                            
+                            <!-- مشاركة على Facebook -->
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ shareUrl|url_encode }}"
+                               target="_blank"
+                               class="btn btn-sm btn-outline-primary rounded-circle"
+                               style="width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center;"
+                               title="مشاركة على فيسبوك">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            
+                            <!-- مشاركة على WhatsApp -->
+                            <a href="https://wa.me/?text={{ (shareText ~ ' ' ~ shareUrl)|url_encode }}"
+                               target="_blank"
+                               class="btn btn-sm btn-outline-success rounded-circle"
+                               style="width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center;"
+                               title="مشاركة على واتساب">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                            
+                            <!-- مشاركة على Instagram (توجيه إلى المنشور أو فتح التطبيق) -->
+                            <a href="https://www.instagram.com/"
+                               target="_blank"
+                               class="btn btn-sm btn-outline-danger rounded-circle"
+                               style="width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center;"
+                               title="مشاركة على انستغرام"
+                               onclick="shareToInstagram('{{ shareUrl|escape('js') }}', '{{ shareText|escape('js') }}')">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            
+                            <!-- نسخ الرابط (إضافة مفيدة) -->
+                            <button onclick="copyToClipboard('{{ shareUrl|escape('js') }}')"
+                                    class="btn btn-sm btn-outline-secondary rounded-circle"
+                                    style="width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center;"
+                                    title="نسخ الرابط">
+                                <i class="fas fa-link"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+                 </a>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    
+
+    <script>
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(function() {
+            alert('تم نسخ الرابط بنجاح!');
+        }, function(err) {
+            console.error('خطأ في نسخ الرابط: ', err);
+        });
+    }
+    
+    function shareToInstagram(url, text) {
+        // ملاحظة: Instagram لا يدعم المشاركة المباشرة عبر URL مثل WhatsApp أو Facebook
+        // الحل الأفضل هو فتح تطبيق Instagram أو نسخ الرابط
+        var message = "يمكنك مشاركة هذا المنتج على Instagram:\n\n" + text + "\n" + url;
+        
+        // محاولة فتح تطبيق Instagram إذا كان مثبتاً (للهواتف المحمولة)
+        window.location.href = "instagram://library?AssetPath=";
+        
+        // بديل: نسخ النص والرابط للحافظة
+        setTimeout(function() {
+            var fullText = text + " - " + url;
+            navigator.clipboard.writeText(fullText).then(function() {
+                alert('تم نسخ نص المنتج! يمكنك الآن لصقه في منشور Instagram.');
+            });
+        }, 100);
+    }
+</script>

@@ -1,0 +1,44 @@
+fields:
+    name:
+        label: 'store.store::lang.model.category.name'
+        span: auto
+        type: text
+
+    status:
+        label: 'store.store::lang.model.category.status'
+        span: auto
+        type: switch
+    is_featured:
+        label: 'store.store::lang.model.category.is_featured'
+        span: auto
+        type: switch
+    is_top:
+        label: 'store.store::lang.model.category.is_top'
+        span: auto
+        type: switch
+    is_popular:
+        label: 'store.store::lang.model.category.is_popular'
+        span: auto
+        type: switch
+    is_trending:
+        label: 'store.store::lang.model.category.is_trending'
+        span: auto
+        type: switch
+    show_homepage:
+        label: 'store.store::lang.model.category.show_homepage'
+        span: auto
+        type: switch
+    description:
+        label: 'store.store::lang.model.category.description'
+        span: auto
+        type: textarea
+    color:
+        label: 'store.store::lang.model.category.color'
+        span: auto
+        type: colorpicker
+    related_categories:
+        label: 'store.store::lang.model.category.related_categories'
+        span: full
+        type: relation
+        nameFrom: name
+        context: 'update'
