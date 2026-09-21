@@ -43,7 +43,7 @@ class PhoneNumberPopup extends ComponentBase
     {
         $user = Auth::getUser();
         // التحقق من وجود المستخدم وعدم وجود رقم هاتف
-        return $user && empty($user->phone);
+        return $user && empty($user->phone) || empty($user->location_lat) || empty($user->location_lng);
     }
     
 public function onUpdatePhoneNumber()
