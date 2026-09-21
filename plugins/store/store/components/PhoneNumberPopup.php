@@ -51,7 +51,8 @@ public function onUpdatePhoneNumber()
     $user = \Auth::getUser();
     
     if (!$user) {
-        return ['success' => false, 'error' => 'يجب تسجيل الدخول أولاً'];
+        Flash::error('يجب تسجيل الدخول أولاً');
+        return ;
     }
     
     $phoneNumber = post('phone_number');
@@ -60,7 +61,13 @@ public function onUpdatePhoneNumber()
     
     // التحقق من صحة الرقم
     if (empty($phoneNumber) || !preg_match('/^[0-9]{10,15}$/', $phoneNumber)) {
-        return ['success' => false, 'error' => 'الرجاء إدخال رقم موبايل صحيح (10-15 رقم)'];
+        Flash::error('الرجاء إدخال رقم موبايل صحيح (10-15 رقم)');
+        return ;
+    }
+
+        if (empty($locationLat) || empty($locationLng) || !is_numeric($locationLat) || !is_numeric($locationLng)) {
+        Flash::error('الرجاء إدخال إحداثيات الموقع الصحيحة');
+        return ;
     }
     
     // التحقق من أن رقم الموبايل فريد
@@ -69,16 +76,19 @@ public function onUpdatePhoneNumber()
         ->first();
     
     if ($existingUser) {
-        return ['success' => false, 'error' => 'رقم الموبايل هذا مستخدم بالفعل من قبل مستخدم آخر'];
+        Flash::error('رقم الموبايل هذا مستخدم بالفعل من قبل مستخدم آخر');   
+        return ;
     }
     
     // التحقق من الإحداثيات (إذا تم إرسالها)
     if (!empty($locationLat) && !empty($locationLng)) {
         if (!is_numeric($locationLat) || !is_numeric($locationLng)) {
-            return ['success' => false, 'error' => 'إحداثيات الموقع غير صحيحة'];
+            Flash::error('إحداثيات الموقع غير صحيحة');
+            return ;
         }
         if ($locationLat < -90 || $locationLat > 90 || $locationLng < -180 || $locationLng > 180) {
-            return ['success' => false, 'error' => 'إحداثيات الموقع خارج النطاق المسموح'];
+            Flash::error('إحداثيات الموقع خارج النطاق المسموح');
+            return ;
         }
     }
     
@@ -98,7 +108,8 @@ public function onUpdatePhoneNumber()
                return redirect()->refresh();
         
     } catch (\Exception $e) {
-        return ['success' => false, 'error' => 'حدث خطأ: ' . $e->getMessage()];
+        \Flash::error('حدث خطاء: ' . $e->getMessage());
+        return ;
     }
 }
 
