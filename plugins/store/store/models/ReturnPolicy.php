@@ -27,5 +27,9 @@ class ReturnPolicy extends Model
         'status' => 'boolean',
     ];
 
-
+    public $belongsToMany = [
+       
+        'products' => ['Store\Store\Models\Product', 'table' => 'store_store_products_return_policies'],
+       
+        ];
 }

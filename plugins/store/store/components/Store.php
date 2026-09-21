@@ -461,10 +461,10 @@ class Store extends ComponentBase
         return Color::get();
     }   
 
-        public function onGetAllBadges()
-    {
-        return Badge::get();
-    }   
+    //     public function onGetAllBadges()
+    // {
+    //     return Badge::get();
+    // }   
 
     public function onGetAllSizes()
     {
@@ -594,57 +594,212 @@ public function getCateogriesOnHomePage()
         return ['#mshop-products-list' => $this->renderPartial('@mshop_products_list.htm', ['GetAllProducts' => $GetAllProducts])];
     }
 
-    public function onFilterProductsWithPrice()
-    {
-        $minPrice = post('minPrice');
-        $maxPrice = post('maxPrice');
 
-        if($minPrice > 0 && $maxPrice > 0 && !is_null($minPrice) && !is_null($maxPrice)){
-             $GetAllProducts = Product::whereHas('prices', function ($query) use ($minPrice, $maxPrice) {
-            $query->whereBetween('price', [$minPrice, $maxPrice]);
-        })->where('status' ,'=', true)->get();
-        }else if ($minPrice > 0 && (is_null($maxPrice) || $maxPrice == 0)){
-             $GetAllProducts = Product::whereHas('prices', function ($query) use ($minPrice) {
-            $query->where('price', '>=', $minPrice);
-        })->where('status' ,'=', true)->get();
-        } else if ($maxPrice > 0 && (is_null($minPrice) || $minPrice == 0)){
-             $GetAllProducts = Product::whereHas('prices', function ($query) use ($maxPrice) {
-            $query->where('price', '<=', $maxPrice);
-        })->where('status' ,'=', true)->get();
-        } else {
-            $GetAllProducts = Product::where('status' ,'=', true)->orderBy('id' , 'desc')->paginate(6);
-        }
-       
-        return ['#mshop-products-list' => $this->renderPartial('@mshop_products_list.htm', ['GetAllProducts' => $GetAllProducts])];
-    }
 
-    public function onFilterProductsWithColor()
-    {
-        $color = post('colors' , []);
-        
 
-        $GetAllProducts = Product::whereHas('colors', function ($query) use ($color) {
-            $query->whereIn('code',  $color);
-        })->where('status' ,'=', true)->get();
-      
-       
-        return ['#mshop-products-list' => $this->renderPartial('@mshop_products_list.htm', ['GetAllProducts' => $GetAllProducts])];
-    }
+//     public function onFilterProducts()
+// {
+//     $minPrice = post('minPrice');
+//     $maxPrice = post('maxPrice');
+//     $colors = post('colors', []);
+//     $sizes = post('sizes', []);
+//     $searchText = post('searchText');
 
-    public function onFilterProductsWithSizes()
-    {
-        $size = post('sizes' , []);
-        
+//     $query = Product::where('status', '=', true);
 
-        $GetAllProducts = Product::whereHas('sizes', function ($query) use ($size) {
-            $query->whereIn('name',  $size);
-        })->where('status' ,'=', true)->get();
-      
-       
-        return ['#mshop-products-list' => $this->renderPartial('@mshop_products_list.htm', ['GetAllProducts' => $GetAllProducts])];
-    }
+//     // فلترة السعر
+//     if (!is_null($minPrice) && !is_null($maxPrice) && ($minPrice > 0 || $maxPrice > 0)) {
+//         $query->whereHas('prices', function ($q) use ($minPrice, $maxPrice) {
+//             if ($minPrice > 0 && $maxPrice > 0) {
+//                 $q->whereBetween('price', [$minPrice, $maxPrice]);
+//             } elseif ($minPrice > 0) {
+//                 $q->where('price', '>=', $minPrice);
+//             } elseif ($maxPrice > 0) {
+//                 $q->where('price', '<=', $maxPrice);
+//             }
+//         });
+//     }
 
+//     // فلترة الألوان
+//     if (!empty($colors) && is_array($colors)) {
+//         $query->whereHas('colors', function ($q) use ($colors) {
+//             $q->whereIn('code', $colors);
+//         });
+//     }
+
+//     // فلترة الأحجام
+//     if (!empty($sizes) && is_array($sizes)) {
+//         $query->whereHas('sizes', function ($q) use ($sizes) {
+//             $q->whereIn('name', $sizes);
+//         });
+//     }
+
+//     // البحث بالاسم
+//     if (!empty($searchText)) {
+//         $query->where('name', 'LIKE', '%' . $searchText . '%');
+//     }
+
+//     $GetAllProducts = $query->orderBy('id', 'desc')->paginate(6);
+
+//     return [
+//         '#mshop-products-list' => $this->renderPartial('@mshop_products_list.htm', [
+//             'GetAllProducts' => $GetAllProducts
+//         ])
+//     ];
+// }
     
+public function onGetAllBrands()
+{
+    return \Store\Store\Models\Brand::has('products')->get();
+}
+
+public function onGetAllMerchants()
+{
+    return \Store\Store\Models\Merchant::has('products')->get();
+}
+
+public function onGetAllBadges()
+{
+    return \Store\Store\Models\Badge::has('products')->get();
+}
+
+public function onGetAllReturnPolicies()
+{
+    return \Store\Store\Models\ReturnPolicy::has('products')->get();
+}
+
+public function onGetAllTaxes()
+{
+    return \Store\Store\Models\ProductTaxe::has('products')->get();
+}
+public function onFilterProducts()
+{
+    // ========== قراءة القيم ==========
+    $minPrice       = post('minPrice', 0);
+    $maxPrice       = post('maxPrice', 0);
+    $colors         = post('colors', []);
+    $sizes          = post('sizes', []);
+    $searchText     = post('searchText', '');
+    $brands         = post('brands', []);
+    $merchants      = post('merchants', []);
+    $badges         = post('badges', []);
+    $returnPolicies = post('return_policies', []);
+    $taxes          = post('taxes', []);
+    $featured       = post('featured', false);
+    $newProduct     = post('new_product', false);
+    $isTop          = post('is_top', false);
+    $isBest         = post('is_best', false);
+    $hasPromotions  = post('has_promotions', false);
+    $minRating      = post('minRating', 0);
+    $sortBy         = post('sortBy', 'latest');
+
+    // ========== بناء الاستعلام ==========
+    $query = \Store\Store\Models\Product::where('status', true);
+
+    // السعر
+    if ($minPrice > 0 || $maxPrice > 0) {
+        $query->whereHas('prices', function ($q) use ($minPrice, $maxPrice) {
+            if ($minPrice > 0 && $maxPrice > 0) {
+                $q->whereBetween('price', [$minPrice, $maxPrice]);
+            } elseif ($minPrice > 0) {
+                $q->where('price', '>=', $minPrice);
+            } else {
+                $q->where('price', '<=', $maxPrice);
+            }
+        });
+    }
+
+    // الألوان
+    if (!empty($colors)) {
+        $query->whereHas('colors', function ($q) use ($colors) {
+            $q->whereIn('code', $colors);
+        });
+    }
+
+    // الأحجام
+    if (!empty($sizes)) {
+        $query->whereHas('sizes', function ($q) use ($sizes) {
+            $q->whereIn('name', $sizes);
+        });
+    }
+
+    // العلامات التجارية
+    if (!empty($brands)) {
+        $query->whereIn('brand_id', $brands);
+    }
+
+    // التجار
+    if (!empty($merchants)) {
+        $query->whereIn('merchant_id', $merchants);
+    }
+
+    // الشارات
+    if (!empty($badges)) {
+        $query->whereHas('badges', function ($q) use ($badges) {
+            $q->whereIn('id', $badges);
+        });
+    }
+
+    // سياسات الإرجاع
+    if (!empty($returnPolicies)) {
+        $query->whereHas('return_policies', function ($q) use ($returnPolicies) {
+            $q->whereIn('id', $returnPolicies);
+        });
+    }
+
+    // الضرائب
+    if (!empty($taxes)) {
+        $query->whereHas('taxes_products', function ($q) use ($taxes) {
+            $q->whereIn('id', $taxes);
+        });
+    }
+
+    // الخصائص
+    if ($featured)    $query->where('is_featured', true);
+    if ($newProduct)  $query->where('new_product', true);
+    if ($isTop)       $query->where('is_top', true);
+    if ($isBest)      $query->where('is_best', true);
+
+    if ($hasPromotions) {
+        $query->whereHas('promotions', function ($q) {
+            $q->where('status', true);
+        });
+    }
+
+    // التقييم
+    if ($minRating > 0) {
+        $query->whereHas('comments', function ($q) use ($minRating) {
+            $q->where('rating', '>=', $minRating);
+        });
+    }
+
+    // البحث
+    if (!empty($searchText)) {
+        $query->where(function ($q) use ($searchText) {
+            $q->where('name', 'LIKE', '%' . $searchText . '%')
+              ->orWhere('short_name', 'LIKE', '%' . $searchText . '%');
+        });
+    }
+
+    // الترتيب
+    if ($sortBy === 'price_asc') {
+        $query->orderBy('id', 'desc');
+    } elseif ($sortBy === 'rating') {
+        $query->orderBy('id', 'desc');
+    } else {
+        $query->orderBy('id', 'desc');
+    }
+
+    $GetAllProducts = $query->paginate(6);
+
+    return [
+        '#mshop-products-list' => $this->renderPartial('@mshop_products_list.htm', [
+            'GetAllProducts' => $GetAllProducts
+        ])
+    ];
+}
+
+
 
 
 
