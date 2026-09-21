@@ -57,7 +57,9 @@ class User extends UserBase
         'password_confirmation',
         'created_ip_address',
         'last_ip_address',
-        'role_frontend'
+        'role_frontend',
+            'location_lat',
+    'location_lng',
     ];
 
 

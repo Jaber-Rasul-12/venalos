@@ -1,7 +1,16 @@
 # ===================================
 #  Extended Profile Field Definitions
 # ===================================
-
+location_lat:
+    label: 'store.store::lang.model.cart.location_lat'
+    span: auto
+    type: text
+    tab: winter.userplus::lang.tab.profile
+location_lng:
+    label: 'store.store::lang.model.cart.location_lng'
+    span: auto
+    tab: winter.userplus::lang.tab.profile
+    type: text
 phone:
     label: winter.userplus::lang.user.phone
     tab: winter.userplus::lang.tab.profile

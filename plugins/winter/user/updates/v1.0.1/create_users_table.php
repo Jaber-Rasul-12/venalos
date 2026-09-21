@@ -21,6 +21,8 @@ class CreateUsersTable extends Migration
             $table->string('reset_password_code')->nullable()->index();
             $table->text('permissions')->nullable();
             $table->boolean('is_activated')->default(0);
+            $table->text('location_lat')->nullable();
+            $table->text('location_lng')->nullable();
             $table->timestamp('activated_at')->nullable();
             $table->timestamp('last_login')->nullable();
             $table->timestamps();

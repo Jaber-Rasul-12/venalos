@@ -1,26 +1,88 @@
 {% if showPopup %}
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <div id="phoneNumberPopup" class="popup-overlay" style="display: none;">
         <div class="popup-container">
             <div class="popup-header">
-                <h3>📱 إضافة رقم الموبايل</h3>
+                <h3>📱 إكمال الملف الشخصي</h3>
                 <button class="popup-close" onclick="closePopup()">&times;</button>
             </div>
             <div class="popup-body">
-                <p>مرحباً {{ user.name }}! يرجى إضافة رقم الموبايل لإكمال ملفك الشخصي</p>
-                <form id="phoneNumberForm" data-request="onUpdatePhoneNumber" data-request-success="closePopup()" data-request-flash>
+                <p>مرحباً {{ user.name }}! يرجى إكمال بياناتك</p>
+                
+                <form id="phoneNumberForm" 
+                      data-request="onUpdatePhoneNumber" 
+                      data-request-success="handleSuccess(data)"
+                      data-request-error="handleError(data)"
+                      data-request-flash>
+                    
+                    <!-- رقم الموبايل -->
                     <div class="form-group">
-                        <label for="phone_number">رقم الموبايل</label>
+                        <label for="phone_number">
+                            <i class="fas fa-phone"></i> رقم الموبايل
+                        </label>
                         <input type="tel" 
                                id="phone_number" 
                                name="phone_number" 
                                class="form-control" 
                                required 
                                pattern="[0-9]{10,15}"
-                               placeholder="أدخل رقم الموبايل">
-                        <small class="form-text text-muted">مثال: 09xxxxxxxx</small>
+                               placeholder="أدخل رقم الموبايل"
+                               value="{{ user.phone }}">
+                        <small class="form-text">مثال: 09xxxxxxxx</small>
                     </div>
-                    <button type="submit" class="btn btn-primary">حفظ</button>
-                    <button type="button" class="btn btn-secondary" onclick="closePopup()">تذكر لاحقاً</button>
+
+                    <!-- الموقع -->
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-map-marker-alt"></i> موقعك الجغرافي
+                        </label>
+                        
+                        <div class="location-buttons">
+                            <button type="button" class="btn btn-location" onclick="detectLocation()">
+                                <i class="fas fa-crosshairs"></i> تحديد موقعي تلقائياً
+                            </button>
+                        </div>
+                        
+                        <div id="map" style="height: 250px; width: 100%; margin-top: 10px; border-radius: 8px; border: 1px solid #ddd;"></div>
+                        
+                        <div class="location-coords">
+                            <div class="coord-item">
+                                <label>Latitude:</label>
+                                <input type="text" 
+                                       id="location_lat" 
+                                       name="location_lat" 
+                                       class="form-control form-control-sm" 
+                                       readonly
+                                       value="{{ user.location_lat }}">
+                            </div>
+                            <div class="coord-item">
+                                <label>Longitude:</label>
+                                <input type="text" 
+                                       id="location_lng" 
+                                       name="location_lng" 
+                                       class="form-control form-control-sm" 
+                                       readonly
+                                       value="{{ user.location_lng }}">
+                            </div>
+                        </div>
+                        
+                        <small class="form-text">
+                            <i class="fas fa-info-circle"></i> 
+                            انقر على الخريطة لاختيار موقعك أو اضغط "تحديد موقعي تلقائياً"
+                        </small>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="closePopup()">
+                            تذكر لاحقاً
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -38,26 +100,24 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow-y: auto;
+            padding: 20px;
         }
         
         .popup-container {
             background: white;
             border-radius: 12px;
-            width: 90%;
-            max-width: 400px;
+            width: 95%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
             box-shadow: 0 5px 20px rgba(0,0,0,0.3);
             animation: slideIn 0.3s ease-out;
         }
         
         @keyframes slideIn {
-            from {
-                transform: translateY(-100px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
         
         .popup-header {
@@ -66,52 +126,108 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+            border-radius: 12px 12px 0 0;
         }
         
-        .popup-header h3 {
-            margin: 0;
-            color: #333;
-        }
+        .popup-header h3 { margin: 0; color: #333; font-size: 18px; }
         
         .popup-close {
             background: none;
             border: none;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
             color: #999;
+            line-height: 1;
+        }
+        .popup-close:hover { color: #333; }
+        
+        .popup-body { padding: 20px; }
+        .popup-body > p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
         }
         
-        .popup-close:hover {
-            color: #333;
-        }
-        
-        .popup-body {
-            padding: 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
+        .form-group { margin-bottom: 20px; }
         
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            color: #555;
-            font-weight: 500;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
         }
         
         .form-control {
             width: 100%;
-            padding: 10px;
+            padding: 10px 12px;
             border: 1px solid #ddd;
             border-radius: 6px;
-            font-size: 16px;
+            font-size: 15px;
             transition: border-color 0.3s;
+            box-sizing: border-box;
         }
         
         .form-control:focus {
             outline: none;
             border-color: #ff6b6b;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+        }
+        
+        .form-control-sm { padding: 6px 10px; font-size: 13px; }
+        .form-control[readonly] { background: #f8f9fa; cursor: not-allowed; }
+        
+        .location-buttons {
+            margin-bottom: 10px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-location {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-location:hover { background: #e0e0e0; }
+        .btn-location:disabled { opacity: 0.6; cursor: wait; }
+        
+        .location-coords {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .coord-item label {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 3px;
+            font-weight: 500;
+        }
+        
+        .form-text {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 6px;
+            display: block;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
         }
         
         .btn {
@@ -119,238 +235,289 @@
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            margin-right: 10px;
             font-size: 14px;
             transition: opacity 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            justify-content: center;
         }
-        
-        .btn:hover {
-            opacity: 0.9;
-        }
+        .btn:hover { opacity: 0.9; }
         
         .btn-primary {
             background-color: #ff6b6b;
             color: white;
+            flex: 1;
         }
-        
         .btn-secondary {
             background-color: #6c757d;
             color: white;
         }
         
-        .form-text {
-            font-size: 12px;
-            color: #6c757d;
-            margin-top: 5px;
-            display: block;
-        }
+        /* إصلاح Leaflet داخل Popup */
+        .leaflet-container { z-index: 1; font-family: inherit; }
+        .leaflet-control-zoom { border: none !important; }
         
         @media (max-width: 480px) {
-            .popup-container {
-                width: 95%;
-                margin: 10px;
-            }
-            
-            .btn {
-                padding: 8px 16px;
-                margin-right: 5px;
-            }
+            .popup-container { width: 100%; max-height: 95vh; }
+            .location-coords { grid-template-columns: 1fr; }
+            .form-actions { flex-direction: column; }
+            .btn { width: 100%; }
         }
     </style>
 
 <script>
-    // متغير للتحكم في مؤقت عرض الـ popup
-    var popupInterval = null;
-    var isPopupVisible = false;
+// ============================================
+// إدارة الخريطة والموقع
+// ============================================
+var map = null;
+var marker = null;
+var defaultLat = {{ user.location_lat ?: '33.5138' }};
+var defaultLng = {{ user.location_lng ?: '36.2765' }};
+var defaultZoom = {{ (user.location_lat and user.location_lng) ? 15 : 6 }};
+
+function initMap() {
+    if (map) return; // تجنب التهيئة المزدوجة
     
-    // عرض الـ popup تلقائياً بعد التأخير المحدد
-    document.addEventListener('DOMContentLoaded', function() {
-        startPopupInterval();
+    var mapEl = document.getElementById('map');
+    if (!mapEl) return;
+    
+    // إنشاء الخريطة
+    map = L.map('map').setView([defaultLat, defaultLng], defaultZoom);
+    
+    // إضافة طبقة OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+    }).addTo(map);
+    
+    // إذا كان هناك موقع محفوظ، ضع علامة
+    if ({{ user.location_lat and user.location_lng ? 'true' : 'false' }}) {
+        addMarker(defaultLat, defaultLng);
+    }
+    
+    // النقر على الخريطة لتحديد الموقع
+    map.on('click', function(e) {
+        addMarker(e.latlng.lat, e.latlng.lng);
     });
     
-    function startPopupInterval() {
-        // تنظيف أي مؤقت سابق
-        if (popupInterval) {
-            clearInterval(popupInterval);
-        }
-        
-        // عرض الـ popup أول مرة بعد التأخير المحدد
-        setTimeout(function() {
-            if (shouldShowPopup()) {
-                showPopup();
-            }
-        }, {{ popupDelay }});
-        
-        // تعيين مؤقت متكرر كل دقيقتين (120000 ميلي ثانية)
-        popupInterval = setInterval(function() {
-            if (shouldShowPopup()) {
-                showPopup();
-            }
-        }, 120000); // 2 minutes = 120000 milliseconds
+    // إصلاح حجم الخريطة بعد فتح الـ popup
+    setTimeout(function() {
+        map.invalidateSize();
+    }, 300);
+}
+
+function addMarker(lat, lng) {
+    // إزالة العلامة القديمة
+    if (marker) {
+        map.removeLayer(marker);
     }
     
-    function shouldShowPopup() {
-        // التحقق من وجود المستخدم وعدم وجود رقم هاتف
-        var userHasPhone = {{ user and user.phone ? 'true' : 'false' }};
-        var popupElement = document.getElementById('phoneNumberPopup');
-        
-        // لا تظهر الـ popup إذا:
-        // 1. المستخدم ليس لديه حساب أو لديه رقم هاتف بالفعل
-        // 2. الـ popup ظاهر بالفعل
-        // 3. المستخدم قام بإدخال رقم الهاتف في هذه الجلسة
-        
-        if (userHasPhone) {
-            return false;
-        }
-        
-        if (popupElement && popupElement.style.display === 'flex') {
-            return false;
-        }
-        
-        // يمكنك إضافة شرط إضافي إذا أردت منع ظهوره بعد إغلاقه يدوياً
-        // if (sessionStorage.getItem('popupClosed_manually_{{ user.id }}') === 'true') {
-        //     return false;
-        // }
-        
-        return true;
+    // إضافة علامة جديدة
+    marker = L.marker([lat, lng], {
+        draggable: true,
+        icon: L.icon({
+            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+            iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+            shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        })
+    }).addTo(map);
+    
+    // عند سحب العلامة
+    marker.on('dragend', function(e) {
+        var pos = e.target.getLatLng();
+        updateCoords(pos.lat, pos.lng);
+    });
+    
+    // تحديث الحقول
+    updateCoords(lat, lng);
+}
+
+function updateCoords(lat, lng) {
+    document.getElementById('location_lat').value = lat.toFixed(6);
+    document.getElementById('location_lng').value = lng.toFixed(6);
+}
+
+function detectLocation() {
+    if (!navigator.geolocation) {
+        showNotification('متصفحك لا يدعم تحديد الموقع', 'error');
+        return;
     }
     
-    function showPopup() {
-        var popup = document.getElementById('phoneNumberPopup');
-        if (popup && popup.style.display !== 'flex') {
-            popup.style.display = 'flex';
-            isPopupVisible = true;
-        }
-    }
+    var btn = document.querySelector('.btn-location');
+    var originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحديد...';
     
-    function closePopup() {
-        var popup = document.getElementById('phoneNumberPopup');
-        if (popup) {
-            popup.style.display = 'none';
-            isPopupVisible = false;
-            // إذا أردت منع ظهوره لمدة 2 دقيقة بعد الإغلاق اليدوي
-            // sessionStorage.setItem('popupClosed_manually_{{ user.id }}', 'true');
-            // setTimeout(function() {
-            //     sessionStorage.removeItem('popupClosed_manually_{{ user.id }}');
-            // }, 120000);
-        }
-    }
-    
-    function handleSuccess(data) {
-        if (data.success) {
-            // إذا نجح المستخدم في إدخال الرقم، قم بإيقاف المؤقت
-            if (popupInterval) {
-                clearInterval(popupInterval);
-                popupInterval = null;
-            }
-            closePopup();
-            showNotification('تم إضافة رقم الموبايل بنجاح!', 'success');
-            // إعادة تحميل الصفحة بعد 1.5 ثانية
-            setTimeout(function() {
-                location.reload();
-            }, 1500);
-        } else {
-            showNotification(data.error || 'حدث خطأ، يرجى المحاولة مرة أخرى', 'error');
-            closePopup();
-        }
-    }
-    
-    function showNotification(message, type) {
-        // إزالة أي إشعارات قديمة
-        var oldNotifications = document.querySelectorAll('.custom-notification');
-        oldNotifications.forEach(function(notification) {
-            notification.remove();
-        });
-        
-        // إنشاء عنصر إشعار جديد
-        var notification = document.createElement('div');
-        notification.className = 'custom-notification';
-        notification.textContent = message;
-        
-        var bgColor = type === 'success' ? '#4CAF50' : '#f44336';
-        notification.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: ${bgColor};
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            z-index: 10000;
-            font-size: 14px;
-            animation: slideInRight 0.3s ease-out;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            direction: rtl;
-        `;
-        
-        document.body.appendChild(notification);
-        
-        setTimeout(function() {
-            notification.style.animation = 'slideOutRight 0.3s ease-out';
-            setTimeout(function() {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
-            }, 300);
-        }, 3000);
-    }
-    
-    // إضافة CSS للـ animations
-    if (!document.getElementById('popup-animations')) {
-        var style = document.createElement('style');
-        style.id = 'popup-animations';
-        style.textContent = `
-            @keyframes slideInRight {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            
+            if (map) {
+                map.setView([lat, lng], 16);
+                addMarker(lat, lng);
             }
             
-            @keyframes slideOutRight {
-                from {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-                to {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            showNotification('تم تحديد موقعك بنجاح', 'success');
+        },
+        function(error) {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            
+            var msg = 'تعذر تحديد الموقع';
+            if (error.code === 1) msg = 'يرجى السماح بالوصول إلى الموقع';
+            else if (error.code === 2) msg = 'الموقع غير متاح';
+            else if (error.code === 3) msg = 'انتهت مهلة تحديد الموقع';
+            
+            showNotification(msg, 'error');
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
+    );
+}
+
+// ============================================
+// إدارة الـ Popup
+// ============================================
+var popupInterval = null;
+var isPopupVisible = false;
+
+document.addEventListener('DOMContentLoaded', function() {
+    startPopupInterval();
+});
+
+function startPopupInterval() {
+    if (popupInterval) clearInterval(popupInterval);
+    
+    setTimeout(function() {
+        if (shouldShowPopup()) showPopup();
+    }, {{ popupDelay|default(3000) }});
+    
+    popupInterval = setInterval(function() {
+        if (shouldShowPopup()) showPopup();
+    }, 120000);
+}
+
+function shouldShowPopup() {
+    var userHasPhone = {{ user and user.phone ? 'true' : 'false' }};
+    var popupElement = document.getElementById('phoneNumberPopup');
+    
+    if (userHasPhone) return false;
+    if (popupElement && popupElement.style.display === 'flex') return false;
+    
+    return true;
+}
+
+function showPopup() {
+    var popup = document.getElementById('phoneNumberPopup');
+    if (popup && popup.style.display !== 'flex') {
+        popup.style.display = 'flex';
+        isPopupVisible = true;
+        
+        // تهيئة الخريطة بعد ظهور الـ popup
+        setTimeout(function() {
+            initMap();
+        }, 100);
     }
-    
-    // مراقبة إغلاق الـ popup من زر الإغلاق
-    document.addEventListener('click', function(event) {
-        var popup = document.getElementById('phoneNumberPopup');
-        var closeBtn = document.querySelector('.popup-close');
-        var cancelBtn = document.querySelector('.btn-secondary');
-        
-        // إذا تم النقر على زر الإغلاق أو زر الإلغاء
-        if (event.target === closeBtn || (cancelBtn && event.target === cancelBtn)) {
-            // لا شيء، closePopup سيتم استدعاؤها من onclick
-            return;
-        }
-        
-        // منع إغلاق الـ popup عند النقر خارج المحتوى
-        var container = document.querySelector('.popup-container');
-        if (popup && popup.style.display === 'flex' && container && !container.contains(event.target) && !event.target.closest('.popup-container')) {
-            // لا تفعل شيئاً - منع الإغلاق عند النقر خارج الـ popup
-            // يمكنك إلغاء التعليق على السطر التالي إذا أردت السماح بالإغلاق بالنقر خارج الـ popup
-            // closePopup();
-        }
-    });
-    
-    // إيقاف المؤقت عند مغادرة الصفحة (اختياري)
-    window.addEventListener('beforeunload', function() {
+}
+
+function closePopup() {
+    var popup = document.getElementById('phoneNumberPopup');
+    if (popup) {
+        popup.style.display = 'none';
+        isPopupVisible = false;
+    }
+}
+
+// ============================================
+// معالجة النجاح والخطأ
+// ============================================
+function handleSuccess(data) {
+    if (data && data.success) {
         if (popupInterval) {
             clearInterval(popupInterval);
+            popupInterval = null;
         }
-    });
+        closePopup();
+        showNotification('تم حفظ البيانات بنجاح!', 'success');
+        setTimeout(function() {
+            location.reload();
+        }, 1500);
+    } else if (data && data.error) {
+        showNotification(data.error, 'error');
+    }
+}
+
+function handleError(data) {
+    var msg = (data && data.error) ? data.error : 'حدث خطأ، يرجى المحاولة مرة أخرى';
+    showNotification(msg, 'error');
+}
+
+// ============================================
+// الإشعارات
+// ============================================
+function showNotification(message, type) {
+    document.querySelectorAll('.custom-notification').forEach(function(n) { n.remove(); });
+    
+    var notification = document.createElement('div');
+    notification.className = 'custom-notification';
+    notification.textContent = message;
+    
+    var bgColor = type === 'success' ? '#4CAF50' : '#f44336';
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: ${bgColor};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        z-index: 10000;
+        font-size: 14px;
+        animation: slideInRight 0.3s ease-out;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        direction: rtl;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(function() {
+        notification.style.animation = 'slideOutRight 0.3s ease-out';
+        setTimeout(function() {
+            if (notification.parentNode) notification.parentNode.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+// Animations
+if (!document.getElementById('popup-animations')) {
+    var style = document.createElement('style');
+    style.id = 'popup-animations';
+    style.textContent = `
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+window.addEventListener('beforeunload', function() {
+    if (popupInterval) clearInterval(popupInterval);
+});
 </script>
 {% endif %}

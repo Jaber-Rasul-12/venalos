@@ -31,7 +31,12 @@ columns:
         sortable: false
         searchable: false
         
-
+    location_lat:
+        label: 'store.store::lang.model.cart.location_lat'
+        type: text
+    location_lng:
+        label: 'store.store::lang.model.cart.location_lng'
+        type: text
     created_at:
         label: winter.user::lang.user.created_at
         type: timetense
