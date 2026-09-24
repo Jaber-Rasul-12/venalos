@@ -30,35 +30,52 @@ class Price extends Model
         'price_merchant' => 'nullable|numeric|min:0',
         'profit_percentage' => 'nullable|numeric|min:0',
         'product_id' => 'required|exists:store_store_products,id',
+        'color_id' => 'nullable|exists:store_store_colors,id',
         'status' => 'required|boolean'
     ];
 
-    protected $fillable = ['price' , 'price_merchant' , 'profit_percentage' , 'product_id' , 'status'];
+    protected $fillable = ['price' , 'price_merchant' , 'profit_percentage' , 'product_id' , 'color_id' , 'status'];
 
         public $belongsTo = [
-        'product' => [Product::class, 'key' => 'product_id']
+        'product' => [Product::class, 'key' => 'product_id'],
+        'color' => [Color::class, 'key' => 'color_id'],
     ];
 
-    public function beforeValidate()
-    {
-        // Ensure status is boolean
-        $this->status = (bool) $this->status;
+
+
+        public $attachOne = [
+        'image' =>[\System\Models\File::class] 
+    ];
+
+public function getColorOptions()
+{
+    $options = [];
+
+    foreach (Color::all() as $color) {
+        $code = e($color->code);
+        $name = e($color->name ?? $color->code);
+
+        $options[$color->id] = sprintf(
+            '<span style="display:inline-flex;align-items:center;gap:6px;">
+                <span style="
+                    display:inline-block;
+                    width:18px;
+                    height:18px;
+                    border-radius:50%%;
+                    background:%s;
+                    border:1px solid #ccc;
+                "></span>
+                <span>%s</span>
+            </span>',
+            $code,
+            $name
+        );
     }
 
-        public function beforeCreate()
-    {
-        if ($this->status) {
-            $this->checkUnique();
-        }
-    }
+    return $options;
+}
 
-    public function beforeUpdate()
-    {
-        $originalValues = $this->getOriginal();
-        if (($originalValues['status'] == false) && ($this->status == true)) {
-            $this->checkUnique();
-        }
-    }
+ 
 
     /**
    * Filter and set options for form fields based on certain conditions.
@@ -88,15 +105,6 @@ public function filterFields($fields, $context = null)
     }
 }
 
-    protected function checkUnique()
-    {
-        $exists = self::where('product_id', $this->product_id)
-            ->where('status', true)
-            ->exists();
-
-        if ($exists) {
-            throw new \ValidationException(['status' => trans('store.store::lang.plugin.error_status_save')]);
-        }
-    }
+ 
 
 }

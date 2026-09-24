@@ -60,9 +60,6 @@
 1.0.21:
     - 'Created table store_store_products_sizes'
     - builder_table_create_store_store_products_sizes.php
-1.0.22:
-    - 'Created table store_store_products_colors'
-    - builder_table_create_store_store_products_colors.php
 1.0.23:
     - 'Created table store_store_emailsubscribes'
     - builder_table_create_store_store_emailsubscribes.php

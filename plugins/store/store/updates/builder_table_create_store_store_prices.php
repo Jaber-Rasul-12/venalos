@@ -18,6 +18,11 @@ class BuilderTableCreateStoreStorePrices extends Migration
             $table->boolean('status');
             $table->timestamp('created_at')->nullable();
             $table->timestamp('updated_at')->nullable();
+              $table->unsignedInteger('color_id');
+  $table->foreign('color_id')
+                ->references('id')
+                ->on('store_store_colors')
+                ->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('product_id')
                 ->references('id')
                 ->on('store_store_products')

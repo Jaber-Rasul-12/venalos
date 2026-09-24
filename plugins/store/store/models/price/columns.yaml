@@ -16,6 +16,10 @@ columns:
         type: store-list-switch  
         icon: true
         font-size: 20
+    color: 
+        label: 'store.store::lang.model.price.color'
+        relation: color
+        select: code
     created_at:
         label: 'store.store::lang.model.price.created_at'
         type: datetime

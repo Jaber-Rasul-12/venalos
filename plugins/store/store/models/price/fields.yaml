@@ -19,3 +19,25 @@ fields:
         label: 'store.store::lang.model.price.status'
         span: auto
         type: switch
+    color:
+        label: 'store.store::lang.model.price.color'
+        type: partial
+        path: ~/plugins/store/store/models/price/_color_field.htm
+        span: auto
+        
+    image:
+        label: store.store::lang.model.price.image
+        type: fileupload
+        mode: image
+        span: auto
+        imageHeight: 260
+        imageWidth: 260
+        thumbOptions:
+            mode: crop
+            offset:
+                - 0
+                - 0
+            quality: 90
+            sharpen: 0
+            interlace: false
+            extension: auto

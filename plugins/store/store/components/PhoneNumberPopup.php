@@ -39,16 +39,24 @@ class PhoneNumberPopup extends ComponentBase
          $this->prepareVars();
     }
     
-    public function shouldShowPopup()
-    {
-        $user = Auth::getUser();
-        // التحقق من وجود المستخدم وعدم وجود رقم هاتف
-        return $user && empty($user->phone) || empty($user->location_lat) || empty($user->location_lng);
+public function shouldShowPopup()
+{
+    $user = Auth::getUser();
+
+    // ✅ أولاً: إذا لم يكن مسجّلاً → لا تُظهر
+    if (!$user) {
+        return false;
     }
+
+    // ✅ ثانياً: أظهر فقط إذا نقص أحد الحقول
+    return empty($user->phone)
+        || empty($user->location_lat)
+        || empty($user->location_lng);
+}
     
 public function onUpdatePhoneNumber()
 {
-    $user = \Auth::getUser();
+    $user = Auth::getUser();
     
     if (!$user) {
         Flash::error('يجب تسجيل الدخول أولاً');

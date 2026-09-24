@@ -62,9 +62,9 @@
             <div class="swiper-slide">
                 <img src=" {% if product.image.path %}{{ product.image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %} " alt="{{ product.name }}">
             </div>
-            {% for image in product.images %}
+             {% for image in product.prices %}
             <div class="swiper-slide">
-                <img src=" {% if image.path %}{{ image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %} " alt="{{ product.name }}">
+                <img src=" {% if image.image.path %}{{ image.image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %} " alt="{{ product.name }}">
             </div>
             {% endfor %}
         </div>
@@ -78,9 +78,9 @@
             <div class="swiper-slide">
                 <img src=" {% if product.image.path %}{{ product.image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %} " alt="{{ product.name }}">
             </div>
-            {% for image in product.images %}
+            {% for image in product.prices %}
             <div class="swiper-slide">
-                <img src=" {% if image.path %}{{ image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %} " alt="{{ product.name }}">
+                <img src=" {% if image.image.path %}{{ image.image.path }}{% else %}{{ 'assets/img/file.jpeg' | theme }}{% endif %} " alt="{{ product.name }}">
             </div>
             {% endfor %}
         </div>
@@ -92,24 +92,41 @@
             <h1 class="product-title-modern">{{ product.name }}</h1>
             
             <div class="product-price-modern">
-                {% set activePrice = null %}
-                {% set previousPrice = null %}
+            <div class="row ">
+                            {% for price in product.prices %}
+                                {% if price.status == true %}
+                                    {% set colorCode = price.color ? price.color.code : '#28a745' %}
+                        
+                                    <div class="col-2 col-md-4">
+                                        <div style="
+                                            display:flex;
+                                            align-items:center;
+                                            gap:6px;
+                                            padding:8px 12px;
+                                            border-radius:8px;
                 
-                {% for price in product.prices %}
-                    {% if price.status == true %}
-                        {% set activePrice = price %}
-                        {% if loop.index0 > 0 %}
-                            {% set previousPrice = product.prices[loop.index0 - 1] %}
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
-                
-                {% if activePrice %}
-                    <div class="price-current">{{ activePrice.price }} <span>$</span></div>
-                    {% if previousPrice %}
-                        <div class="price-old"><del>{{ previousPrice.price }} $</del></div>
-                    {% endif %}
-                {% endif %}
+                                            height:100%;
+                                        ">
+                                            {# دائرة اللون #}
+                                            <span style="
+                                                display:inline-block;
+                                                width:14px;
+                                                height:14px;
+                                                border-radius:50%;
+                                                background:{{ colorCode }};
+                                                border:1px solid #ccc;
+                                                flex-shrink:0;
+                                            "></span>
+                        
+                                            {# السعر #}
+                                            <h6 class="price_number m-0" style="color: #28a745;">
+                                                {{ price.price }} $
+                                            </h6>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
             </div>
             <div class="featured-tag-detail">التوصيل خلال {{ product.delivery_time }}</div>
             

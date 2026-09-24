@@ -217,6 +217,8 @@ return [
             'price_merchant' => 'Price merchant',
             'profit_percentage' => 'Profit percentage',
             'status' => 'Status',
+            'color' => 'Color',
+            'image' => 'Image',
             'created_at' => 'Created at',
             'updated_at' => 'Updated at',
         ],

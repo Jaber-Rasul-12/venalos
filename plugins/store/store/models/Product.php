@@ -65,7 +65,7 @@ class Product extends Model
         'taxes_products' => ['Store\Store\Models\ProductTaxe', 'table' => 'store_store_product_taxes_products'],
         'return_policies' => ['Store\Store\Models\ReturnPolicy', 'table' => 'store_store_products_return_policies'],
         'badges' => ['Store\Store\Models\Badge', 'table' => 'store_store_badges_products'],
-        'colors' => ['Store\Store\Models\Color', 'table' => 'store_store_products_colors'],
+        
         'sizes' => ['Store\Store\Models\Size', 'table' => 'store_store_products_sizes'],
         'related_products' => [
         self::class,
@@ -90,9 +90,6 @@ class Product extends Model
     ];
 
 
-    public $attachMany = [
-        'images' => [\System\Models\File::class]
-    ];
 
 
         public function getAverageRatingAttribute()
@@ -138,26 +135,26 @@ class Product extends Model
    * @param mixed  $context  Additional context information if needed.
    *
    */
-public function filterFields($fields, $context = null)
-{
-    if($context === 'create') {
-        // التحقق من وجود القيم وعدم كونها فارغة
-        if (isset($fields->price_merchant->value, $fields->profit_percentage->value) 
-            && !empty($fields->price_merchant->value) 
-            && !empty($fields->profit_percentage->value)) {
+// public function filterFields($fields, $context = null)
+// {
+//     if($context === 'create') {
+//         // التحقق من وجود القيم وعدم كونها فارغة
+//         if (isset($fields->price_merchant->value, $fields->profit_percentage->value) 
+//             && !empty($fields->price_merchant->value) 
+//             && !empty($fields->profit_percentage->value)) {
             
-            // جلب القيم وتحويلها إلى أرقام عشرية (float)
-            $priceMerchant = (float) $fields->price_merchant->value;
-            $profitPercentage = (float) $fields->profit_percentage->value;
+//             // جلب القيم وتحويلها إلى أرقام عشرية (float)
+//             $priceMerchant = (float) $fields->price_merchant->value;
+//             $profitPercentage = (float) $fields->profit_percentage->value;
             
-            // حساب سعر البيع: السعر الأصلي + (السعر الأصلي * نسبة الربح المئوية / 100)
-            $calculatedPrice = $priceMerchant * (1 + ($profitPercentage / 100));
+//             // حساب سعر البيع: السعر الأصلي + (السعر الأصلي * نسبة الربح المئوية / 100)
+//             $calculatedPrice = $priceMerchant * (1 + ($profitPercentage / 100));
             
-            // تعيين القيمة المحسوبة لحقل price
-            $fields->price->value = $calculatedPrice;
-        }
-    }
-}
+//             // تعيين القيمة المحسوبة لحقل price
+//             $fields->price->value = $calculatedPrice;
+//         }
+//     }
+// }
 
 
   public function beforeValidate()
@@ -180,14 +177,14 @@ public function filterFields($fields, $context = null)
         }
     }
 
-    public function afterCreate()
-    {
-        $this->prices()->create([
-            'price' => $this->getOriginalPurgeValue('price'),
-            'price_merchant' => $this->getOriginalPurgeValue('price_merchant'),
-            'profit_percentage' => $this->getOriginalPurgeValue('profit_percentage'),
-            'status' => 1
-        ]);
-    }
+    // public function afterCreate()
+    // {
+    //     $this->prices()->create([
+    //         'price' => $this->getOriginalPurgeValue('price'),
+    //         'price_merchant' => $this->getOriginalPurgeValue('price_merchant'),
+    //         'profit_percentage' => $this->getOriginalPurgeValue('profit_percentage'),
+    //         'status' => 1
+    //     ]);
+    // }
 
 }

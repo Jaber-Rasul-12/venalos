@@ -1,0 +1,59 @@
+<?php
+$colors = \Store\Store\Models\Color::all();
+$fieldName = $field->getName();
+?>
+
+<div class="form-group">
+    
+
+    <select
+        name="<?= e($fieldName) ?>"
+        class="form-control custom-color-select"
+        style="display:none;"
+    >
+        <?php foreach ($colors as $color): ?>
+            <option
+                value="<?= $color->id ?>"
+                data-color="<?= e($color->code) ?>"
+                <?= $value == $color->id ? 'selected' : '' ?>
+            >
+                <?= e($color->name ?? $color->code) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+
+    <!-- عرض اللون المختار -->
+    
+</div>
+
+<script>
+(function () {
+    // نستخدم Select2 مع قالب مخصص يعرض اللون
+    var $select = $('select[name="<?= e($fieldName) ?>"]');
+    $select.show().select2({
+        templateResult: function (state) {
+            if (!state.id) return state.text;
+            var color = $(state.element).data('color');
+            return $(
+                '<span style="display:inline-flex;align-items:center;gap:6px;">' +
+                    '<span style="display:inline-block;width:16px;height:16px;' +
+                    'border-radius:50%;background:' + color + ';border:1px solid #ccc;"></span>' +
+                    '<span>' + state.text + '</span>' +
+                '</span>'
+            );
+        },
+        templateSelection: function (state) {
+            if (!state.id) return state.text;
+            var color = $(state.element).data('color');
+            return $(
+                '<span style="display:inline-flex;align-items:center;gap:6px;">' +
+                    '<span style="display:inline-block;width:16px;height:16px;' +
+                    'border-radius:50%;background:' + color + ';border:1px solid #ccc;"></span>' +
+                    '<span>' + state.text + '</span>' +
+                '</span>'
+            );
+        },
+        escapeMarkup: function (m) { return m; }
+    });
+})();
+</script>

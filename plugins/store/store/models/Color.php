@@ -28,7 +28,11 @@ class Color extends Model
     ];
 
     public $belongsToMany = [
-        'products' => ['Store\Store\Models\Product', 'table' => 'store_store_products_colors'],
+        'prices' => ['Store\Store\Models\Price', 'table' => 'store_store_prices_colors'],
+    ];
+
+        public $hasMany = [
+      'prices' => ['Store\Store\Models\Price'],
     ];
 
 
