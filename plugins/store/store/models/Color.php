@@ -27,9 +27,9 @@ class Color extends Model
         'code' => 'required|unique:store_store_colors,code|max:255'
     ];
 
-    public $belongsToMany = [
-        'prices' => ['Store\Store\Models\Price', 'table' => 'store_store_prices_colors'],
-    ];
+    // public $belongsToMany = [
+    //     'prices' => ['Store\Store\Models\Price', 'table' => 'store_store_prices_colors'],
+    // ];
 
         public $hasMany = [
       'prices' => ['Store\Store\Models\Price'],

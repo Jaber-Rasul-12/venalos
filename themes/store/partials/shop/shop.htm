@@ -100,15 +100,13 @@
                         <h4>اختر الألوان</h4>
                         <div class="mshop-options-list">
                             {% for color in Store.onGetAllColors %}
-                                {% if color.products.count > 0 %}
                                     <div class="mshop-option-item">
                                         <label>
-                                            <input type="checkbox" name="colors[]" class="filter-checkbox" value="{{ color.code }}" data-name="{{ color.name }}" data-target="colorSetting" data-label="ألوان">
+                                            <input type="checkbox" name="colors[]" class="filter-checkbox" value="{{ color.id }}" data-name="{{ color.name }}" data-target="colorSetting" data-label="ألوان">
                                             <span class="mshop-color-dot" style="background-color: {{ color.code }};"></span>
                                             {{ color.name }}
                                         </label>
                                     </div>
-                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>

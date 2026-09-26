@@ -711,8 +711,8 @@ public function onFilterProducts()
 
     // الألوان
     if (!empty($colors)) {
-        $query->whereHas('colors', function ($q) use ($colors) {
-            $q->whereIn('code', $colors);
+        $query->whereHas('prices', function ($q) use ($colors) {
+            $q->whereIn('color_id', $colors);
         });
     }
 
